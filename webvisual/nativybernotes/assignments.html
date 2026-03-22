@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI Mastery Log — NatIvyberNotes</title>
+  <meta name="description" content="CLI Mastery Log: Practical Exercises for Cyber Operations." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(20,184,166,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(20,184,166,0.15); }
+    .terminal-block { background: #05100a; border: 1px solid #14b8a6; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #0a1a10; border-bottom: 1px solid #14b8a633; padding: 8px 14px; }
+    .cmd { color: #2dd4bf; }
+    .flag { color: #fbbf24; }
+    .comment { color: #4b5563; }
+    .output { color: #9ca3af; }
+    .highlight-box { background: rgba(20,184,166,0.06); border-left: 3px solid #14b8a6; border-radius: 0 8px 8px 0; }
+    code.inline { background: rgba(20,184,166,0.12); color: #2dd4bf; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .toc-link.active { color: #14b8a6; }
+    .badge-m1 { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); color: #2dd4bf; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-teal-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <span class="text-black font-black text-xs font-mono">N</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="index.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← Home</a>
+        <a href="notes.html" class="text-gray-500 hover:text-white transition-colors">Notes</a>
+        <a href="challenges.html" class="text-gray-500 hover:text-white transition-colors">Challenges</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero -->
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-teal-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m1 px-3 py-1 rounded-full text-xs font-mono mb-6">ASSIGNMENTS / LABS</span>
+        <div class="text-5xl mb-4">💻</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">CLI <span class="text-teal-400">Mastery Log</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Practical Exercises. Objective: Building speed and accuracy in the Linux terminal.</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-8 text-sm text-gray-500">
+          <span class="flex items-center gap-1.5"><strong class="text-white">Track:</strong> Cyber Operations</span>
+          <span class="flex items-center gap-1.5"><strong class="text-white">Program:</strong> 2026 Cyber Talent Program</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm" id="toc">
+            <a href="#lab1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">1. Structural Efficiency</a>
+            <a href="#lab2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">2. Batch Asset Creation</a>
+            <a href="#lab3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">3. Permission Hardening</a>
+            <a href="#lab4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">4. Wargame Progress</a>
+            <a href="#lab5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">5. Essential Commands</a>
+            <a href="#lab6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">6. Vim Proficiency</a>
+            <a href="#lab7" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">7. Version Control</a>
+            <a href="#reflections" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">8. Reflections</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="lg:col-span-3 space-y-10">
+
+        <!-- Lab 1 -->
+        <section id="lab1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">Lab 1: Structural Efficiency (Brace Expansion)</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Task:</strong> Replicate a complex directory hierarchy using a single command string.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Target Structure</span></div>
+            <div class="p-4 text-sm font-mono text-gray-400 whitespace-pre">workspace/
+├── offensive/
+│   ├── payloads/
+│   └── exploits/
+└── defensive/
+    ├── hardening/
+    └── monitoring/</div>
+          </div>
+          
+          <div class="terminal-block">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Solution & Verification</span></div>
+            <div class="p-4 text-sm font-mono space-y-1">
+              <p><span class="cmd">mkdir</span> <span class="flag">-p</span> workspace/{offensive/{payloads,exploits},defensive/{hardening,monitoring}}</p>
+              <p class="mt-4"><span class="cmd">find</span> workspace <span class="flag">-maxdepth</span> 2 <span class="flag">-not -path</span> '*/.*'</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lab 2 -->
+        <section id="lab2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">Lab 2: Batch Asset Creation</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Task:</strong> Generate a sequence of files for testing purposes using one command.</p>
+          
+          <div class="terminal-block">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Solution</span></div>
+            <div class="p-4 text-sm font-mono space-y-1">
+              <p><span class="comment"># Create a range of log files</span></p>
+              <p><span class="cmd">touch</span> access_log_{01..10}.txt</p>
+              <p class="mt-4"><span class="comment"># Confirm creation</span></p>
+              <p><span class="cmd">ls</span> <span class="flag">-1</span> access_log_*.txt</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lab 3 -->
+        <section id="lab3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">Lab 3: Permission Hardening Drills</h2>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed"><strong class="text-white">Task:</strong> Apply specific access controls to various file types.</p>
+          
+          <div class="grid gap-4 font-mono text-sm mb-8">
+            <div class="glass p-4 rounded-lg">
+              <span class="text-teal-400 font-bold">1. Private Script:</span> Owner has full access; no one else has any.<br>
+              <code class="inline mt-2 block w-max">chmod 700 private_exploit.sh</code>
+            </div>
+            <div class="glass p-4 rounded-lg">
+              <span class="text-cyan-400 font-bold">2. Shared Config:</span> Owner can edit; group/others can only read.<br>
+              <code class="inline mt-2 block w-max">chmod 644 system_config.yaml</code>
+            </div>
+            <div class="glass p-4 rounded-lg">
+              <span class="text-purple-400 font-bold">3. Protected Key:</span> Read-only for the owner; no other access.<br>
+              <code class="inline mt-2 block w-max">chmod 400 id_rsa_backup</code>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Octal</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Symbolic</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Security Context</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr><td class="py-3 px-4 font-mono text-teal-400">755</td><td class="py-3 px-4 font-mono">rwxr-xr-x</td><td class="py-3 px-4 text-gray-300">Standard for public binaries/scripts.</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-teal-400">644</td><td class="py-3 px-4 font-mono">rw-r--r--</td><td class="py-3 px-4 text-gray-300">Standard for non-sensitive data files.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-teal-400">700</td><td class="py-3 px-4 font-mono">rwx------</td><td class="py-3 px-4 text-gray-300">Sensitive user scripts.</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-teal-400">400</td><td class="py-3 px-4 font-mono">r--------</td><td class="py-3 px-4 text-gray-300">Critical secrets (SSH keys, API tokens).</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Lab 4 & 5 & 6 -->
+        <section id="lab4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">Wargame Progress & Tools</h2>
+          </div>
+          
+          <h3 class="text-lg font-bold text-white mb-4">OverTheWire Bandit Progress</h3>
+          <div class="overflow-x-auto mb-8">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Level</th>
+                  <th class="text-center py-3 px-4 text-teal-400 font-semibold">Status</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Core Concept</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Command</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr><td class="py-3 px-4">0</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">SSH Authentication</td><td class="py-3 px-4 font-mono"><code class="inline">ssh bandit0@...</code></td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4">1</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">Standard Input/Output</td><td class="py-3 px-4 font-mono"><code class="inline">cat readme</code></td></tr>
+                <tr><td class="py-3 px-4">2</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">Special Character Handling</td><td class="py-3 px-4 font-mono"><code class="inline">cat ./-</code></td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4">3</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">Whitespace Management</td><td class="py-3 px-4 font-mono"><code class="inline">cat "file name"</code></td></tr>
+                <tr><td class="py-3 px-4">4</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">Hidden File Discovery</td><td class="py-3 px-4 font-mono"><code class="inline">ls -la</code></td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4">5</td><td class="py-3 px-4 text-center">✅</td><td class="py-3 px-4">File Type Identification</td><td class="py-3 px-4 font-mono"><code class="inline">file ./*</code></td></tr>
+                <tr><td class="py-3 px-4">6</td><td class="py-3 px-4 text-center">⏳</td><td class="py-3 px-4">Property-Based Search</td><td class="py-3 px-4 font-mono"><code class="inline">find / -size 1033c</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <h3 id="lab5" class="section-anchor text-lg font-bold text-white mb-4 mt-8">Essential Command Checklist</h3>
+          <ul class="space-y-2 text-sm text-gray-300 font-mono mb-8">
+            <li><span class="text-teal-400 font-bold">Navigation:</span> pwd, cd, ls -la, tree</li>
+            <li><span class="text-teal-400 font-bold">Manipulation:</span> mkdir -p, touch, cp -r, mv, rm -rf</li>
+            <li><span class="text-teal-400 font-bold">Inspection:</span> cat, head, tail -f, less</li>
+            <li><span class="text-teal-400 font-bold">Permissions:</span> chmod, chown, umask</li>
+            <li><span class="text-teal-400 font-bold">Search:</span> grep -ri, find, locate, which</li>
+            <li><span class="text-teal-400 font-bold">System:</span> ps aux, top, df -h, free -m</li>
+          </ul>
+
+          <h3 id="lab6" class="section-anchor text-lg font-bold text-white mb-4 mt-8">Vim Proficiency</h3>
+          <p class="text-gray-400 mb-2 leading-relaxed"><strong class="text-white">Task:</strong> Edit a configuration file without leaving the terminal.</p>
+          <div class="glass p-4 rounded-xl font-mono text-sm space-y-2 text-gray-300">
+            <div>1. <code class="inline">vim server_setup.sh</code></div>
+            <div>2. Press <kbd class="px-2 py-1 bg-gray-800 rounded">i</kbd> to enter <strong>Insert Mode</strong>.</div>
+            <div>3. Add: <code class="text-teal-400">#!/bin/bash \n echo "Initializing Security Protocols..."</code></div>
+            <div>4. Press <kbd class="px-2 py-1 bg-gray-800 rounded">Esc</kbd> to return to <strong>Normal Mode</strong>.</div>
+            <div>5. Type <code class="inline">:wq</code> and press <kbd class="px-2 py-1 bg-gray-800 rounded">Enter</kbd> to save and exit.</div>
+          </div>
+        </section>
+
+        <!-- Lab 7 -->
+        <section id="lab7" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">07</span>
+            <h2 class="text-2xl font-bold text-white">Version Control (Git)</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Requirement:</strong> Maintain a consistent commit history to track learning progress.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Standard Workflow</span></div>
+            <div class="p-4 text-sm font-mono space-y-1">
+              <p><span class="comment"># Stage all changes</span></p>
+              <p><span class="cmd">git add</span> .</p>
+              <p class="mt-4"><span class="comment"># Commit with descriptive message</span></p>
+              <p><span class="cmd">git commit</span> <span class="flag">-m</span> <span class="text-green-400">"Add Module 3 notes and Stego write-up"</span></p>
+              <p class="mt-4"><span class="comment"># Push to remote repository</span></p>
+              <p><span class="cmd">git push</span> origin main</p>
+            </div>
+          </div>
+          <p class="text-gray-300 font-semibold mb-2">Commit Guidelines:</p>
+          <ul class="list-disc pl-5 text-gray-400 text-sm space-y-1">
+            <li><code class="text-teal-400">feat:</code> New notes or challenges.</li>
+            <li><code class="text-teal-400">fix:</code> Correcting errors in previous documentation.</li>
+            <li><code class="text-teal-400">docs:</code> Updating README or meta-information.</li>
+          </ul>
+        </section>
+        
+        <!-- Reflections -->
+        <section id="reflections" class="section-anchor glass-card rounded-2xl p-6 sm:p-8 border border-teal-500/30">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">08</span>
+            <h2 class="text-2xl font-bold text-white">Reflections</h2>
+          </div>
+          <ul class="space-y-4 text-gray-300">
+            <li class="flex items-start gap-3">
+              <span class="text-teal-400 mt-1">✔</span>
+              <div><strong class="text-white">Brace Expansion</strong> is a massive time-saver for setting up lab environments.</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-teal-400 mt-1">✔</span>
+              <div><strong class="text-white">Vim</strong> feels slow initially, but the efficiency gains in remote server management are undeniable.</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-teal-400 mt-1">✔</span>
+              <div><strong class="text-white">Bandit</strong> levels are excellent for reinforcing the "everything is a file" philosophy.</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-yellow-400 mt-1">⚠</span>
+              <div>Need to focus more on <strong class="text-white">Regular Expressions (Regex)</strong> for advanced <code>grep</code> usage.</div>
+            </li>
+          </ul>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // TOC active state script
+    const sections = document.querySelectorAll('.section-anchor');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      tocLinks.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#'+current); });
+    });
+  </script>
+</body>
+</html>

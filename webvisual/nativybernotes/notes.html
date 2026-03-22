@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 1: Linux Fundamentals — NatIvyberNotes</title>
+  <meta name="description" content="Introduction to Linux & System Orientation. Core concepts, FHS, and practical labs." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(20,184,166,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(20,184,166,0.15); }
+    .terminal-block { background: #05100a; border: 1px solid #14b8a6; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #0a1a10; border-bottom: 1px solid #14b8a633; padding: 8px 14px; }
+    .cmd { color: #2dd4bf; }
+    .highlight-box { background: rgba(20,184,166,0.06); border-left: 3px solid #14b8a6; border-radius: 0 8px 8px 0; }
+    .tip-box { background: rgba(59,130,246,0.06); border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; }
+    code.inline { background: rgba(20,184,166,0.12); color: #2dd4bf; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .toc-link.active { color: #14b8a6; }
+    .badge-m1 { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); color: #2dd4bf; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-teal-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <span class="text-black font-black text-xs font-mono">N</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="index.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← Home</a>
+        <a href="challenges.html" class="text-gray-500 hover:text-white transition-colors">Challenges</a>
+        <a href="assignments.html" class="text-gray-500 hover:text-white transition-colors">Assignments</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero -->
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-teal-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m1 px-3 py-1 rounded-full text-xs font-mono mb-6">NOTES / MODULE 1</span>
+        <div class="text-5xl mb-4">🐧</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Linux <span class="text-teal-400">System Orientation</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Introduction to Linux, Core Concepts, and The Filesystem Hierarchy Standard (FHS).</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-8 text-sm text-gray-500">
+          <span class="flex items-center gap-1.5"><strong class="text-white">Date:</strong> March 7, 2026</span>
+          <span class="flex items-center gap-1.5"><strong class="text-white">Track:</strong> Cyber Operations</span>
+          <span class="flex items-center gap-1.5"><strong class="text-white">Duration:</strong> Full Day Intensive</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm" id="toc">
+            <a href="#section1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">1. Program Guidelines</a>
+            <a href="#section2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">2. Core Linux Concepts</a>
+            <a href="#section3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">3. Filesystem Hierarchy (FHS)</a>
+            <a href="#section4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">4. Practical Lab: Bandit</a>
+            <a href="#section5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">5. Summary & Reflections</a>
+            <a href="#section6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">6. Action Items</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="lg:col-span-3 space-y-10">
+
+        <!-- Section 1 -->
+        <section id="section1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">Program Guidelines & Workflow</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed">To succeed in the Cyber Talent Program, the following protocols must be observed:</p>
+          <ul class="space-y-3 text-gray-300 list-disc list-inside">
+            <li><strong class="text-white">Attendance:</strong> Mandatory sessions every weekend (Saturday & Sunday).</li>
+            <li><strong class="text-white">Documentation:</strong> All progress, must be synced to <strong class="text-teal-400">GitHub</strong>.</li>
+            <li><strong class="text-white">Tools:</strong> Preferred environments for documentation are <strong class="text-teal-400">Obsidian</strong> or <strong class="text-teal-400">Notion</strong>.</li>
+            <li><strong class="text-white">Communication:</strong> The official Telegram channel is the primary source for all announcements.</li>
+          </ul>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="section2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">Core Linux Concepts</h2>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Understanding the Linux Ecosystem</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">Linux is technically a <strong class="text-teal-300">Kernel</strong>—the software layer that manages hardware resources. A complete operating system is referred to as a <strong class="text-teal-300">Distribution</strong> (or "distro"), which combines the kernel with GNU utilities and a user interface.</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <div class="text-lg font-bold text-white mb-1">Kali Linux</div>
+              <div class="text-sm text-gray-500">The industry standard for penetration testing.</div>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <div class="text-lg font-bold text-white mb-1">Parrot Security</div>
+              <div class="text-sm text-gray-500">A lightweight alternative focused on privacy.</div>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <div class="text-lg font-bold text-white mb-1">Ubuntu</div>
+              <div class="text-sm text-gray-500">A versatile base for both servers and desktops.</div>
+            </div>
+          </div>
+          
+          <div class="tip-box p-6 border-l-4 border-teal-500 bg-teal-500/10 text-gray-300">
+            <h4 class="text-white font-bold mb-2 text-lg">The Universal Rule</h4>
+            <p class="italic mb-2">"Everything in Linux is treated as a file."</p>
+            <p class="text-sm">This design philosophy means that whether you are interacting with a document, a hard drive (<code class="inline">/dev/nvme0n1</code>), a running process (<code class="inline">/proc/[pid]</code>), or a network socket, the interface remains consistent.</p>
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="section3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">The Filesystem Hierarchy Standard (FHS)</h2>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed">The Linux directory structure is a tree starting at the <strong class="text-white">Root</strong> (<code class="inline">/</code>). Understanding this layout is critical for both offensive and defensive operations.</p>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Path</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Purpose</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Security Significance</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr><td class="py-3 px-4 font-mono text-cyan-400">/</td><td class="py-3 px-4 text-gray-300">Root Directory</td><td class="py-3 px-4 text-gray-400">The base of the entire system.</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-cyan-400">/bin</td><td class="py-3 px-4 text-gray-300">User Binaries</td><td class="py-3 px-4 text-gray-400">Contains essential tools like ls, grep, and bash.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-cyan-400">/etc</td><td class="py-3 px-4 text-gray-300">System Configs</td><td class="py-3 px-4 text-yellow-400">High Priority: Stores system-wide settings & hashes.</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-cyan-400">/home</td><td class="py-3 px-4 text-gray-300">User Data</td><td class="py-3 px-4 text-gray-400">Target for data exfiltration.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-red-400">/root</td><td class="py-3 px-4 text-gray-300">Admin Home</td><td class="py-3 px-4 text-red-400">The ultimate goal (Superuser access).</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-yellow-400">/tmp</td><td class="py-3 px-4 text-gray-300">Temp Files</td><td class="py-3 px-4 text-yellow-500">Risk: World-writable; used to hide malicious scripts.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-cyan-400">/var/log</td><td class="py-3 px-4 text-gray-300">System Logs</td><td class="py-3 px-4 text-green-400">Defense: Essential for tracking intrusions.</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-4 font-mono text-cyan-400">/dev</td><td class="py-3 px-4 text-gray-300">Device Files</td><td class="py-3 px-4 text-gray-400">Interface for hardware components.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-cyan-400">/opt</td><td class="py-3 px-4 text-gray-300">Add-on Apps</td><td class="py-3 px-4 text-gray-400">Location for third-party security tools.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="section4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">Practical Lab: OverTheWire (Bandit)</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed">The <strong class="text-white">Bandit</strong> wargame is our primary tool for building command-line proficiency.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Connection Details</span></div>
+            <div class="p-4 text-sm space-y-1 font-mono">
+              <p><span class="cmd">ssh</span> bandit0@bandit.labs.overthewire.org <span class="flag">-p</span> 2220</p>
+              <p class="text-gray-500"># Initial Password: bandit0</p>
+            </div>
+          </div>
+          
+          <h3 class="text-xl font-bold text-white mb-4">Level Summary (0-4)</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-4 rounded-xl border-l-2 border-teal-500">
+              <div class="font-bold text-white mb-1">Level 0 → 1</div>
+              <div class="text-sm text-gray-400 mb-2">Accessing file content</div>
+              <code class="inline bg-dark-600 block w-full">cat readme</code>
+            </div>
+            <div class="glass p-4 rounded-xl border-l-2 border-cyan-500">
+              <div class="font-bold text-white mb-1">Level 1 → 2</div>
+              <div class="text-sm text-gray-400 mb-2">Handling special characters</div>
+              <code class="inline bg-dark-600 block w-full">cat ./-</code>
+            </div>
+            <div class="glass p-4 rounded-xl border-l-2 border-purple-500">
+              <div class="font-bold text-white mb-1">Level 2 → 3</div>
+              <div class="text-sm text-gray-400 mb-2">Managing filenames with spaces</div>
+              <code class="inline bg-dark-600 block w-full">cat "filename with spaces"</code>
+            </div>
+            <div class="glass p-4 rounded-xl border-l-2 border-yellow-500">
+              <div class="font-bold text-white mb-1">Level 3 → 4</div>
+              <div class="text-sm text-gray-400 mb-2">Locating hidden assets</div>
+              <code class="inline bg-dark-600 block w-full">ls -la</code>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="section5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">05</span>
+            <h2 class="text-2xl font-bold text-white">Summary & Reflections</h2>
+          </div>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start gap-4">
+              <span class="text-xl">💡</span>
+              <div><strong class="text-white">Distro vs. Kernel:</strong> Always remember that Linux is the core, and the distro is the package.</div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-xl">📁</span>
+              <div><strong class="text-white">FHS Mastery:</strong> Knowing where logs (<code class="inline">/var/log</code>) and configs (<code class="inline">/etc</code>) live is the first step in system defense.</div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-xl">⚡</span>
+              <div><strong class="text-white">CLI Speed:</strong> Speed in the terminal is a force multiplier in high-pressure security scenarios.</div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="section6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">06</span>
+            <h2 class="text-2xl font-bold text-white">Action Items</h2>
+          </div>
+          <div class="space-y-3 font-mono text-sm text-gray-300">
+            <label class="flex items-center gap-3 p-3 glass rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
+              <input type="checkbox" checked disabled class="w-5 h-5 rounded border-gray-600 text-teal-500 focus:ring-teal-500 bg-gray-700">
+              <span>Deploy Kali Linux in a virtualized environment (VirtualBox/VMware).</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 glass rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
+              <input type="checkbox" checked disabled class="w-5 h-5 rounded border-gray-600 text-teal-500 focus:ring-teal-500 bg-gray-700">
+              <span>Initialize the GitHub repository for course tracking.</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 glass rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
+              <input type="checkbox" checked disabled class="w-5 h-5 rounded border-gray-600 text-teal-500 focus:ring-teal-500 bg-gray-700">
+              <span>Complete Bandit levels 0 through 5.</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 glass rounded-lg cursor-pointer hover:bg-white/5 transition-colors">
+              <input type="checkbox" checked disabled class="w-5 h-5 rounded border-gray-600 text-teal-500 focus:ring-teal-500 bg-gray-700">
+              <span>Document initial setup and push to the main branch.</span>
+            </label>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // TOC active state script
+    const sections = document.querySelectorAll('.section-anchor');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      tocLinks.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#'+current); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CTF Challenges — NatIvyberNotes</title>
+  <meta name="description" content="CTF Write-up: System Enumeration & Flag Discovery. Payload Analysis #01." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(20,184,166,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(20,184,166,0.15); }
+    .terminal-block { background: #05100a; border: 1px solid #14b8a6; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #0a1a10; border-bottom: 1px solid #14b8a633; padding: 8px 14px; }
+    .cmd { color: #2dd4bf; }
+    .flag { color: #fbbf24; }
+    .comment { color: #4b5563; }
+    .output { color: #9ca3af; }
+    .highlight-box { background: rgba(20,184,166,0.06); border-left: 3px solid #14b8a6; border-radius: 0 8px 8px 0; }
+    .warn-box { background: rgba(251,191,36,0.06); border-left: 3px solid #fbbf24; border-radius: 0 8px 8px 0; }
+    .tip-box { background: rgba(59,130,246,0.06); border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; }
+    code.inline { background: rgba(20,184,166,0.12); color: #2dd4bf; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .toc-link.active { color: #14b8a6; }
+    .badge-m1 { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); color: #2dd4bf; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-teal-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <span class="text-black font-black text-xs font-mono">N</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="index.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← Home</a>
+        <a href="notes.html" class="text-gray-500 hover:text-white transition-colors">Notes</a>
+        <a href="assignments.html" class="text-gray-500 hover:text-white transition-colors">Assignments</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero -->
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-teal-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m1 px-3 py-1 rounded-full text-xs font-mono mb-6">LABS / CTF</span>
+        <div class="text-5xl mb-4">🎯</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">CTF Write-up: <span class="text-teal-400">System Enumeration</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Payload Analysis #01: Analyzing a provided binary payload, executing it in a controlled environment, and locating three hidden flags.</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-8 text-sm text-gray-500">
+          <span class="flex items-center gap-1.5"><strong class="text-white">Category:</strong> Linux Forensics / Enumeration</span>
+          <span class="flex items-center gap-1.5"><strong class="text-white">Difficulty:</strong> Level 1 (Beginner)</span>
+          <span class="flex items-center gap-1.5"><strong class="text-white">Progress:</strong> 2 / 3 Flags Captured</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm" id="toc">
+            <a href="#section1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">1. Initial Reconnaissance</a>
+            <a href="#section2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">2. Flag 1: Temp Staging Area</a>
+            <a href="#section3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">3. Flag 2: Log File Obfuscation</a>
+            <a href="#section4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">4. Flag 3: Deep Persistence</a>
+            <a href="#section5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">5. Tool Summary</a>
+            <a href="#section6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">6. Lessons Learned</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="lg:col-span-3 space-y-10">
+
+        <!-- Section 1 -->
+        <section id="section1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">Initial Reconnaissance</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed">Before execution, I performed basic static analysis on the <code class="inline">payload</code> binary to understand its nature.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Static Analysis Commands</span></div>
+            <div class="p-4 text-sm space-y-1 font-mono">
+              <p><span class="comment"># Identify file type and architecture</span></p>
+              <p><span class="cmd">file</span> ./payload</p>
+              <p class="mt-2"><span class="comment"># Extract human-readable strings</span></p>
+              <p><span class="cmd">strings</span> ./payload <span class="cmd">| head</span> <span class="flag">-n</span> 20</p>
+              <p class="mt-2"><span class="comment"># Check current permissions</span></p>
+              <p><span class="cmd">ls</span> <span class="flag">-l</span> ./payload</p>
+              <p class="mt-2"><span class="comment"># Grant execution rights if necessary</span></p>
+              <p><span class="cmd">chmod</span> <span class="flag">+x</span> ./payload</p>
+            </div>
+          </div>
+          
+          <div class="terminal-block">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Execution</span></div>
+            <div class="p-4 text-sm space-y-1 font-mono">
+              <p><span class="cmd">./payload</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="section2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">Flag 1: The Temporary Staging Area</h2>
+          </div>
+          <div class="flex gap-4 mb-6">
+            <span class="bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1 rounded text-sm flex items-center gap-2">✅ Captured</span>
+            <span class="glass px-3 py-1 rounded text-sm text-gray-400 font-mono">Location: /tmp/admin_data_leak.txt</span>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Analysis:</strong> The <code class="inline">/tmp</code> directory is a common target for attackers because it is world-writable and often overlooked by casual users. I checked for any new files created immediately after running the payload.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Discovery</span></div>
+            <div class="p-4 text-sm space-y-1 font-mono">
+              <p><span class="comment"># List all files in /tmp, sorted by modification time</span></p>
+              <p><span class="cmd">ls</span> <span class="flag">-lt</span> /tmp <span class="cmd">| head</span></p>
+              <p class="mt-2"><span class="comment"># Found: admin_data_leak.txt</span></p>
+              <p><span class="cmd">cat</span> /tmp/admin_data_leak.txt</p>
+            </div>
+          </div>
+          <div class="highlight-box p-4 flex items-center justify-center">
+            <code class="inline text-lg px-4 py-2 border-dashed border border-teal-500/50">FLAG{SYSTEM_TMP_EXPOSED}</code>
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="section3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">Flag 2: Log File Obfuscation</h2>
+          </div>
+          <div class="flex gap-4 mb-6">
+            <span class="bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1 rounded text-sm flex items-center gap-2">✅ Captured</span>
+            <span class="glass px-3 py-1 rounded text-sm text-gray-400 font-mono">Location: /var/log/sys_audit.log</span>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Analysis:</strong> Advanced malware often hides its presence within legitimate system directories like <code class="inline">/var/log</code>. By mimicking the naming convention of standard logs, it can evade detection.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Discovery</span></div>
+            <div class="p-4 text-sm space-y-1 font-mono">
+              <p><span class="comment"># Search recursively for the flag pattern within the log directory</span></p>
+              <p><span class="cmd">grep</span> <span class="flag">-rn</span> "FLAG{" /var/log/ <span class="output">2>/dev/null</span></p>
+              <p class="mt-2"><span class="comment"># Alternative: Sort logs by time to see the most recent additions</span></p>
+              <p><span class="cmd">ls</span> <span class="flag">-lt</span> /var/log <span class="cmd">| grep</span> "Mar  8"</p>
+            </div>
+          </div>
+          <div class="highlight-box p-4 flex items-center justify-center">
+            <code class="inline text-lg px-4 py-2 border-dashed border border-teal-500/50">FLAG{LOG_SPOOFING_DETECTED}</code>
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="section4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">Flag 3: Deep Persistence</h2>
+          </div>
+          <div class="flex gap-4 mb-6">
+            <span class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-3 py-1 rounded text-sm flex items-center gap-2">⏳ Pending</span>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed"><strong class="text-white">Current Hypothesis:</strong> The final flag is likely hidden in a less obvious location, possibly involving environment variables, hidden user configurations, or encoded within the binary itself.</p>
+          
+          <h3 class="text-lg font-semibold text-white mb-4">Investigation Plan:</h3>
+          <div class="grid gap-3 font-mono text-sm">
+            <div class="glass p-3 rounded-lg border-l-4 border-yellow-500">
+              <span class="text-gray-500 mr-2">1.</span> <span class="text-gray-300">Environment Audit:</span> <code class="inline ml-2 text-teal-400 bg-transparent">printenv | grep -i "FLAG"</code>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-yellow-500">
+              <span class="text-gray-500 mr-2">2.</span> <span class="text-gray-300">Hidden File Search:</span> <code class="inline ml-2 text-teal-400 bg-transparent">find ~ -name ".*" -ls</code>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-yellow-500">
+              <span class="text-gray-500 mr-2">3.</span> <span class="text-gray-300">SUID Enumeration:</span> <code class="inline ml-2 text-teal-400 bg-transparent">find / -perm -4000 -type f 2>/dev/null</code>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-yellow-500">
+              <span class="text-gray-500 mr-2">4.</span> <span class="text-gray-300">Binary Decoding:</span> <code class="inline ml-2 text-teal-400 bg-transparent">strings payload | grep "==" | base64 -d</code>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-yellow-500">
+              <span class="text-gray-500 mr-2">5.</span> <span class="text-gray-300">Process Inspection:</span> <code class="inline ml-2 text-teal-400 bg-transparent">ps auxww | grep "payload"</code>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="section5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">05</span>
+            <h2 class="text-2xl font-bold text-white">Tool Summary</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Tool</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Function</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr>
+                  <td class="py-3 px-4 font-mono text-cyan-400">ls -lt</td>
+                  <td class="py-3 px-4 text-gray-300">Sort files by time to identify recent changes.</td>
+                </tr>
+                <tr class="bg-gray-900/30">
+                  <td class="py-3 px-4 font-mono text-cyan-400">grep -rn</td>
+                  <td class="py-3 px-4 text-gray-300">Recursive search for patterns with line numbers.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-mono text-cyan-400">strings</td>
+                  <td class="py-3 px-4 text-gray-300">Extract ASCII text from binary files.</td>
+                </tr>
+                <tr class="bg-gray-900/30">
+                  <td class="py-3 px-4 font-mono text-cyan-400">find</td>
+                  <td class="py-3 px-4 text-gray-300">Locate files based on specific attributes (permissions, owner).</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-mono text-cyan-400">file</td>
+                  <td class="py-3 px-4 text-gray-300">Determine the true nature of a file.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="section6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">06</span>
+            <h2 class="text-2xl font-bold text-white">Lessons Learned</h2>
+          </div>
+          <ul class="space-y-4 text-gray-300">
+            <li class="flex items-start gap-4">
+              <span class="text-xl">⚡</span>
+              <div><strong class="text-white block">Speed is Essential</strong> Checking <code class="inline">/tmp</code> and <code class="inline">/var/log</code> immediately after a suspicious event is a standard IR (Incident Response) procedure.</div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-xl">🔍</span>
+              <div><strong class="text-white block">Context Matters</strong> A file's location often tells you more about the attacker's intent than the file's content.</div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="text-xl">🛠️</span>
+              <div><strong class="text-white block">Tool Agnostic</strong> During this lab, I had to rely on basic CLI tools. Understanding the underlying system is more important than having a fancy GUI.</div>
+            </li>
+          </ul>
+          
+          <div class="mt-8 tip-box p-6 border-l-4 border-teal-500 bg-teal-500/10 italic text-gray-300 text-center">
+            "The best place to hide a leaf is in a forest. The best place to hide a flag is in a log file."
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // TOC active state script
+    const sections = document.querySelectorAll('.section-anchor');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      tocLinks.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#'+current); });
+    });
+  </script>
+</body>
+</html>
