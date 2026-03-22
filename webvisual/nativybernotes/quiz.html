@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master Quiz — NatIvyberNotes Linux Course</title>
+  <meta name="description" content="Test all 6 Linux modules with the NatIvyberNotes master quiz — 30 questions covering user management, packages, scripts, shell, and operators." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body{background:#030712;font-family:'Inter',sans-serif;}
+    .grid-bg{background-image:linear-gradient(rgba(20,184,166,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(20,184,166,0.04) 1px,transparent 1px);background-size:40px 40px;}
+    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid rgba(20,184,166,0.12);}
+    .glass-card{background:linear-gradient(135deg,rgba(13,21,38,0.95),rgba(10,15,30,0.98));border:1px solid rgba(20,184,166,0.15);}
+    .quiz-opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;cursor:pointer;}
+    .quiz-opt:hover{border-color:rgba(20,184,166,0.4);background:rgba(20,184,166,0.08);}
+    .quiz-opt.correct{border-color:#22c55e!important;background:rgba(34,197,94,0.12)!important;}
+    .quiz-opt.wrong{border-color:#ef4444!important;background:rgba(239,68,68,0.12)!important;}
+    .quiz-opt.selected{border-color:#14b8a6;background:rgba(20,184,166,0.12);}
+    code.il{background:rgba(20,184,166,0.12);color:#2dd4bf;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.875em;}
+    .module-tag{font-size:0.65rem;padding:1px 8px;border-radius:9999px;font-family:'JetBrains Mono',monospace;display:inline-block;margin-bottom:6px;}
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-teal-500/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center"><span class="text-black font-black text-xs">N</span></div><span class="font-bold text-sm"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span></a>
+      <a href="index.html" class="text-gray-500 hover:text-white text-sm transition-colors">← All Modules</a>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero -->
+    <div class="py-16 px-4 text-center border-b border-gray-800/50" style="background:radial-gradient(ellipse at 50% 50%,rgba(20,184,166,0.1) 0%,transparent 70%);">
+      <div class="text-6xl mb-4">🏆</div>
+      <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Linux <span class="text-teal-400">Master Quiz</span></h1>
+      <p class="text-gray-400 max-w-xl mx-auto mb-8">30 questions across all 6 modules. Proving you know Linux from user management to shell operators.</p>
+      <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500 mb-8">
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-teal-400"></span>30 Questions</span>
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>6 Modules</span>
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-400"></span>Instant Feedback</span>
+      </div>
+      <!-- Score tracker -->
+      <div class="inline-flex items-center gap-4 glass rounded-2xl px-8 py-4">
+        <div class="text-center"><div class="text-3xl font-black text-teal-400" id="answered-count">0</div><div class="text-xs text-gray-500">Answered</div></div>
+        <div class="w-px h-10 bg-gray-700"></div>
+        <div class="text-center"><div class="text-3xl font-black text-white">30</div><div class="text-xs text-gray-500">Total</div></div>
+        <div class="w-px h-10 bg-gray-700"></div>
+        <div class="text-center"><div class="text-3xl font-black text-yellow-400" id="score-display">–</div><div class="text-xs text-gray-500">Score</div></div>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 py-12">
+      <div id="quiz-container" class="space-y-6"></div>
+
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="submitQuiz()" class="px-10 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-bold text-lg hover:from-teal-400 hover:to-cyan-400 transition-all shadow-lg shadow-teal-500/30">Submit All Answers</button>
+        <button onclick="resetQuiz()" class="px-10 py-4 rounded-xl glass border border-gray-600 text-gray-400 hover:border-teal-500/50 hover:text-teal-400 transition-all">Reset Quiz</button>
+      </div>
+
+      <!-- Result card -->
+      <div id="quiz-result" class="hidden mt-8 glass-card rounded-2xl p-8 text-center border border-teal-500/30"></div>
+
+      <!-- Module Review Links -->
+      <div class="mt-12 glass-card rounded-2xl p-6">
+        <p class="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-4">Review Modules</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <a href="module1.html" class="block p-3 rounded-xl border border-teal-500/20 hover:border-teal-400/40 hover:bg-teal-500/5 transition-all text-center"><div class="text-xl mb-1">👤</div><div class="text-xs text-gray-400">User Management</div></a>
+          <a href="module2.html" class="block p-3 rounded-xl border border-cyan-500/20 hover:border-cyan-400/40 hover:bg-cyan-500/5 transition-all text-center"><div class="text-xl mb-1">📦</div><div class="text-xs text-gray-400">Packages</div></a>
+          <a href="module3.html" class="block p-3 rounded-xl border border-purple-500/20 hover:border-purple-400/40 hover:bg-purple-500/5 transition-all text-center"><div class="text-xl mb-1">📜</div><div class="text-xs text-gray-400">Scripts</div></a>
+          <a href="module4.html" class="block p-3 rounded-xl border border-yellow-500/20 hover:border-yellow-400/40 hover:bg-yellow-500/5 transition-all text-center"><div class="text-xl mb-1">⚙️</div><div class="text-xs text-gray-400">Install Methods</div></a>
+          <a href="module5.html" class="block p-3 rounded-xl border border-green-500/20 hover:border-green-400/40 hover:bg-green-500/5 transition-all text-center"><div class="text-xl mb-1">🐚</div><div class="text-xs text-gray-400">The Shell</div></a>
+          <a href="module6.html" class="block p-3 rounded-xl border border-orange-500/20 hover:border-orange-400/40 hover:bg-orange-500/5 transition-all text-center"><div class="text-xl mb-1">⚡</div><div class="text-xs text-gray-400">Shell Features</div></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // Module 1 — User Management
+      {mod:"MODULE 01",color:"teal",q:"What does UID stand for?",opts:["Universal Interface Definition","User Identifier","Unix ID Directory","Unique Installation Data"],correct:1},
+      {mod:"MODULE 01",color:"teal",q:"What is the UID of the root user?",opts:["1","100","1000","0"],correct:3},
+      {mod:"MODULE 01",color:"teal",q:"Which flag in useradd creates the home directory?",opts:["-h","-d","-m","-u"],correct:2},
+      {mod:"MODULE 01",color:"teal",q:"Which command safely edits the sudoers file?",opts:["nano /etc/sudoers","sudo visudo","sudo edit sudoers","vi /etc/sudoers"],correct:1},
+      {mod:"MODULE 01",color:"teal",q:"In 'usermod -aG sudo alice', what does -a do?",opts:["Add alice to admin only","Append — prevents removing from other groups","Authenticate the change","Apply immediately"],correct:1},
+      // Module 2 — Packages
+      {mod:"MODULE 02",color:"cyan",q:"What does 'apt' stand for?",opts:["Advanced Package Tool","Automatic Package Transfer","Arch Package Terminal","Advanced Program Terminal"],correct:0},
+      {mod:"MODULE 02",color:"cyan",q:"Which command refreshes the package list WITHOUT installing?",opts:["apt upgrade","apt install","apt update","apt refresh"],correct:2},
+      {mod:"MODULE 02",color:"cyan",q:"In pacman, '-Syu' means:",opts:["Search your updates","Sync database and upgrade all packages","Select your updates","Secure your uploads"],correct:1},
+      {mod:"MODULE 02",color:"cyan",q:"What is the AUR?",opts:["Advanced Update Repository","Arch User Repository","Automated Upgrade Runtime","Arch Universal Registry"],correct:1},
+      {mod:"MODULE 02",color:"cyan",q:"Which distros use apt as package manager?",opts:["Arch and Manjaro","FreeBSD and Termux","Debian, Ubuntu, Kali, Parrot","Red Hat and CentOS"],correct:2},
+      // Module 3 — Scripts
+      {mod:"MODULE 03",color:"purple",q:"What does 'chmod +x install.sh' do?",opts:["Creates the script","Deletes the script","Adds execute permission","Compresses the script"],correct:2},
+      {mod:"MODULE 03",color:"purple",q:"What does '#!/bin/bash' at the top of a script do?",opts:["A comment describing the script","Tells the OS which interpreter to use","The last line that exits the script","A debugging tool"],correct:1},
+      {mod:"MODULE 03",color:"purple",q:"What does './install.sh' mean?",opts:["Install from internet","Run from the current directory","Create in root dir","Delete the script"],correct:1},
+      {mod:"MODULE 03",color:"purple",q:"What does the -y flag do in 'sudo apt install zsh -y'?",opts:["Runs as root","Automatically answers YES to all prompts","Disables prompts permanently","Shows verbose output"],correct:1},
+      {mod:"MODULE 03",color:"purple",q:"What is command substitution syntax in bash?",opts:["[command]","{command}","$(command)","#(command)"],correct:2},
+      // Module 4 — Install Methods
+      {mod:"MODULE 04",color:"yellow",q:"What does 'dpkg' stand for?",opts:["Debian Package Kit","Debian Package","Default Package Key","Distributed Package Group"],correct:1},
+      {mod:"MODULE 04",color:"yellow",q:"Correct order to compile from source:",opts:["make → configure → install","./configure → make → sudo make install","sudo make install → make → configure","make install → configure → make"],correct:1},
+      {mod:"MODULE 04",color:"yellow",q:"What does the -x flag do in 'tar -xzf archive.tar.gz'?",opts:["Compress","Extract","Execute","Export XML"],correct:1},
+      {mod:"MODULE 04",color:"yellow",q:"What is a key advantage of Snap and Flatpak?",opts:["Smaller file size","Works across different Linux distros","Faster installation","No internet needed"],correct:1},
+      {mod:"MODULE 04",color:"yellow",q:"What does 'sudo apt install -f' do after failed dpkg?",opts:["Force reinstall .deb","Fix missing dependencies","Format package cache","Fetch updates"],correct:1},
+      // Module 5 — Shell
+      {mod:"MODULE 05",color:"green",q:"What is a shell in Linux?",opts:["A container for files","Physical terminal hardware","A command-line interpreter between user and kernel","A type of Linux distribution"],correct:2},
+      {mod:"MODULE 05",color:"green",q:"What does 'bash' stand for?",opts:["Basic Advanced Shell Handler","Bourne Again Shell","Bash And Shell Handler","Binary Advanced Shell"],correct:1},
+      {mod:"MODULE 05",color:"green",q:"What does 'echo $SHELL' display?",opts:["Shell version number","Path to your current shell","All installed shells","Shell man page"],correct:1},
+      {mod:"MODULE 05",color:"green",q:"Which command changes the default shell?",opts:["sudo changeShell","chsh -s /bin/zsh","shell --change zsh","sudo set-shell zsh"],correct:1},
+      {mod:"MODULE 05",color:"green",q:"Which shell is known for being great for beginners?",opts:["sh","bash","dash","fish"],correct:3},
+      // Module 6 — Shell Features
+      {mod:"MODULE 06",color:"orange",q:"What does the && operator do?",opts:["Runs both simultaneously","Runs 2nd only if 1st SUCCEEDS","Runs 2nd only if 1st fails","Combines output"],correct:1},
+      {mod:"MODULE 06",color:"orange",q:"What does the || operator do?",opts:["Runs both always","Runs 2nd only if 1st SUCCEEDS","Runs 2nd only if 1st FAILS","Combines output"],correct:2},
+      {mod:"MODULE 06",color:"orange",q:"What does the pipe | do?",opts:["Redirects to file","Passes left output as right input","Runs in parallel","Combines files"],correct:1},
+      {mod:"MODULE 06",color:"orange",q:"What is the difference between > and >> ?",opts:["None — same thing","> appends, >> overwrites","> overwrites, >> appends","> is for stderr, >> for stdout"],correct:2},
+      {mod:"MODULE 06",color:"orange",q:"What does '2>' redirect?",opts:["Both stdout and stderr","Only stdin","Only stderr (error messages)","The exit code"],correct:2},
+    ];
+
+    const colorMap = { teal:"text-teal-400 bg-teal-400/10 border-teal-400/20", cyan:"text-cyan-400 bg-cyan-400/10 border-cyan-400/20", purple:"text-purple-400 bg-purple-400/10 border-purple-400/20", yellow:"text-yellow-400 bg-yellow-400/10 border-yellow-400/20", green:"text-green-400 bg-green-400/10 border-green-400/20", orange:"text-orange-400 bg-orange-400/10 border-orange-400/20" };
+
+    let answers = new Array(questions.length).fill(null), submitted = false;
+
+    function renderQuiz() {
+      const c = document.getElementById('quiz-container'); c.innerHTML = '';
+      questions.forEach((q, qi) => {
+        const d = document.createElement('div');
+        d.className = 'glass-card rounded-2xl p-5';
+        d.innerHTML = `
+          <span class="module-tag border ${colorMap[q.color]}">${q.mod}</span>
+          <p class="text-white font-semibold mb-4 text-sm sm:text-base"><span class="text-teal-400 font-mono text-xs mr-2">Q${qi+1}.</span>${q.q}</p>
+          <div class="space-y-2" id="opts-${qi}">
+            ${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" class="quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs font-mono">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}
+          </div>
+          <div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>
+        `;
+        c.appendChild(d);
+      });
+    }
+
+    function selectAnswer(qi, oi) {
+      if (submitted) return;
+      answers[qi] = oi;
+      document.querySelectorAll(`#opts-${qi} button`).forEach((b,i) => { b.className = 'quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3' + (i===oi?' selected':''); });
+      document.getElementById('answered-count').textContent = answers.filter(a=>a!==null).length;
+    }
+
+    function submitQuiz() {
+      submitted = true; let score = 0;
+      questions.forEach((q, qi) => {
+        const opts = document.querySelectorAll(`#opts-${qi} button`);
+        opts.forEach((b,i) => { b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'; if(i===q.correct)b.classList.add('correct'); else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong'); });
+        const fb = document.getElementById(`feedback-${qi}`); fb.classList.remove('hidden');
+        if (answers[qi]===q.correct) { score++; fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300'; fb.textContent='✓ Correct!'; }
+        else { fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300'; fb.textContent=`✗ Correct answer: ${q.opts[q.correct]}`; }
+      });
+      const pct = Math.round((score/questions.length)*100);
+      document.getElementById('score-display').textContent = pct + '%';
+      const r = document.getElementById('quiz-result'); r.classList.remove('hidden');
+      let grade, emoji, msg;
+      if (pct >= 90) { grade='text-teal-400'; emoji='🏆'; msg='Outstanding! You are a Linux master!'; }
+      else if (pct >= 80) { grade='text-green-400'; emoji='✅'; msg='Excellent! Almost perfect knowledge!'; }
+      else if (pct >= 70) { grade='text-cyan-400'; emoji='👍'; msg='Good job! A few areas to review.'; }
+      else if (pct >= 60) { grade='text-yellow-400'; emoji='📚'; msg='Keep studying — review the weak modules.'; }
+      else { grade='text-red-400'; emoji='💪'; msg='Don\'t give up — re-read the modules and try again!'; }
+      r.innerHTML = `
+        <div class="text-6xl mb-4">${emoji}</div>
+        <div class="text-5xl font-black ${grade} mb-2">${score} / ${questions.length}</div>
+        <div class="text-xl text-white font-bold mb-2">${pct}%</div>
+        <div class="text-gray-400 mb-6">${msg}</div>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 text-xs text-center mb-6">
+          ${['Module 1','Module 2','Module 3','Module 4','Module 5','Module 6'].map((m,mi)=>{
+            const start=mi*5; const moduleScore = questions.slice(start,start+5).filter((_,i)=>answers[start+i]===questions[start+i].correct).length;
+            const c=moduleScore>=4?'text-green-400':moduleScore>=3?'text-yellow-400':'text-red-400';
+            return `<div class="bg-gray-900/50 border border-gray-700 rounded-lg p-2"><div class="${c} font-bold">${moduleScore}/5</div><div class="text-gray-600">${m}</div></div>`;
+          }).join('')}
+        </div>
+        <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl bg-teal-500/20 border border-teal-500/30 text-teal-400 font-semibold hover:bg-teal-500/30 transition-all">Try Again</button>
+      `;
+      window.scrollTo({top: document.getElementById('quiz-result').offsetTop - 100, behavior:'smooth'});
+    }
+
+    function resetQuiz() { submitted=false; answers=new Array(questions.length).fill(null); document.getElementById('quiz-result').classList.add('hidden'); document.getElementById('answered-count').textContent='0'; document.getElementById('score-display').textContent='–'; renderQuiz(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    renderQuiz();
+  </script>
+</body>
+</html>

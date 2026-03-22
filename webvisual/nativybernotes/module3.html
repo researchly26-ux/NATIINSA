@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 3: Script Installation — NatIvyberNotes</title>
+  <meta name="description" content="Learn Linux script installation: chmod, bash, shebang line, making scripts executable and running them with sudo." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(168,85,247,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(168,85,247,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(168,85,247,0.15); }
+    .terminal-block { background: #08050f; border: 1px solid #a855f7; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #120a1e; border-bottom: 1px solid #a855f733; padding: 8px 14px; }
+    .cmd { color: #d8b4fe; } .flag { color: #fbbf24; } .comment { color: #4b5563; } .shebang { color: #f0abfc; }
+    .highlight-box { background: rgba(168,85,247,0.06); border-left: 3px solid #a855f7; border-radius: 0 8px 8px 0; }
+    .warn-box { background: rgba(251,191,36,0.06); border-left: 3px solid #fbbf24; border-radius: 0 8px 8px 0; }
+    .tip-box { background: rgba(59,130,246,0.06); border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; }
+    .quiz-option { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; cursor: pointer; }
+    .quiz-option:hover { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.08); }
+    .quiz-option.correct { border-color: #22c55e; background: rgba(34,197,94,0.12); }
+    .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.12); }
+    .quiz-option.selected { border-color: #a855f7; background: rgba(168,85,247,0.12); }
+    code.inline { background: rgba(168,85,247,0.12); color: #d8b4fe; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .toc-link.active { color: #a855f7; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-purple-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30"><span class="text-black font-black text-xs font-mono">N</span></div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="module2.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← Packages</a>
+        <a href="module4.html" class="px-3 py-1.5 rounded-lg glass border border-purple-500/20 text-purple-400 text-xs hover:border-purple-400/40 transition-all">Next: Install Methods →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-purple-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono mb-6 border border-purple-500/30 bg-purple-500/10 text-purple-300">MODULE 03 / 06</span>
+        <div class="text-5xl mb-4">📜</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Script <span class="text-purple-400">Installation</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Making scripts executable, running bash scripts, understanding the shebang line, chmod permissions, and automation patterns.</p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm">
+            <a href="#section1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">1. What is a Script?</a>
+            <a href="#section2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">2. chmod — Permissions</a>
+            <a href="#section3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">3. Running Scripts</a>
+            <a href="#section4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">4. The Shebang Line</a>
+            <a href="#section5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">5. Common Script Pattern</a>
+            <a href="#section6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors">6. Command Substitution</a>
+            <a href="#quiz" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/5 transition-colors font-semibold mt-3 border border-purple-500/20 text-center">📝 Take Quiz</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="lg:col-span-3 space-y-10">
+
+        <section id="section1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">01</span><h2 class="text-2xl font-bold text-white">What is a Script?</h2></div>
+          <p class="text-gray-400 mb-4 leading-relaxed">A <strong class="text-white">script</strong> is a text file containing a series of commands that the shell executes <strong class="text-white">sequentially</strong>. Scripts automate repetitive tasks and are commonly used for software installation and system configuration.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <h4 class="text-white font-semibold mb-2 text-sm">Scripts are used for:</h4>
+              <ul class="text-gray-400 text-sm space-y-1.5">
+                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Software installation</li>
+                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> System configuration</li>
+                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Automating backups</li>
+                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Batch file operations</li>
+                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Scheduled tasks (cron)</li>
+              </ul>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <h4 class="text-white font-semibold mb-2 text-sm">Script file types:</h4>
+              <ul class="text-gray-400 text-sm space-y-1.5">
+                <li class="flex items-center gap-2"><code class="inline">.sh</code> — Shell script (most common)</li>
+                <li class="flex items-center gap-2"><code class="inline">.bash</code> — Bash-specific script</li>
+                <li class="flex items-center gap-2"><code class="inline">.zsh</code> — Zsh script</li>
+                <li class="flex items-center gap-2"><code class="inline">.py</code> — Python script</li>
+                <li class="flex items-center gap-2"><span class="text-gray-500 text-xs">No extension is also valid!</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="section2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">02</span><h2 class="text-2xl font-bold text-white">chmod — Making Scripts Executable</h2></div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><code class="inline">chmod</code> stands for <strong class="text-white">"change mode"</strong>. It modifies file and directory permissions. Before you can run a script, you must make it executable with <code class="inline">chmod +x</code>.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">chmod usage</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Make a script executable</span></p>
+              <p><span class="cmd">chmod</span> <span class="flag">+x</span> install.sh</p>
+              <p class="mt-2"><span class="comment"># Check permissions after</span></p>
+              <p><span class="cmd">ls -la</span> install.sh</p>
+              <p class="text-gray-500 pl-4">-rwxr-xr-x 1 user group 1234 Mar 21 install.sh</p>
+              <p class="text-purple-300 pl-4 text-xs mt-1">↑ The 'x' means execute permission is now granted</p>
+            </div>
+          </div>
+          <div class="space-y-2 mb-6">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">chmod</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Change mode</strong> — modifies the permissions (read/write/execute) of files and directories.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">+x</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Adds execute permission</strong> to the file. The <code class="inline">+</code> means "add", <code class="inline">x</code> means "execute". Without this, Linux refuses to run the file as a program.</p>
+            </div>
+          </div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-sm mb-4">
+            <p class="text-white font-semibold mb-3">Understanding Linux Permissions:</p>
+            <div class="font-mono text-xs space-y-2">
+              <p class="text-gray-400">-rwxr-xr-x</p>
+              <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                <div class="bg-gray-800 rounded p-2"><span class="text-gray-500">-</span><br/><span class="text-gray-500 text-xs">file type</span></div>
+                <div class="bg-purple-900/30 border border-purple-500/30 rounded p-2"><span class="text-purple-300">rwx</span><br/><span class="text-gray-500">owner</span></div>
+                <div class="bg-gray-800 rounded p-2"><span class="text-gray-400">r-x</span><br/><span class="text-gray-500">group</span></div>
+                <div class="bg-gray-800 rounded p-2"><span class="text-gray-400">r-x</span><br/><span class="text-gray-500">others</span></div>
+              </div>
+              <p class="text-gray-600 text-xs">r=read, w=write, x=execute, -=permission denied</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="section3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">03</span><h2 class="text-2xl font-bold text-white">Running Scripts — 4 Methods</h2></div>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+            <div class="p-4 text-sm space-y-2">
+              <p><span class="comment"># Method 1: Run executable from current dir</span></p>
+              <p><span class="flag">./</span><span class="cmd">install.sh</span></p>
+              <p class="mt-2"><span class="comment"># Method 2: Run directly with bash interpreter</span></p>
+              <p><span class="cmd">bash</span> install.sh</p>
+              <p class="mt-2"><span class="comment"># Method 3: Run as root with sudo</span></p>
+              <p><span class="flag">sudo</span> <span class="cmd">bash</span> install.sh</p>
+              <p class="mt-2"><span class="comment"># Method 4: Run as sudo executable (after chmod +x)</span></p>
+              <p><span class="flag">sudo</span> <span class="flag">./</span><span class="cmd">install.sh</span></p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">./install.sh</code>
+              <p class="text-gray-400 text-sm"><code class="inline">./</code> means <strong class="text-white">"from the current directory"</strong>. Required because Linux doesn't search the current directory for executables by default (security feature). The <code class="inline">.</code> is the current dir, <code class="inline">/</code> is the path separator.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">bash install.sh</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Explicitly calls bash</strong> to execute the script. Doesn't require <code class="inline">chmod +x</code>. Useful when you can't change permissions.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">sudo bash install.sh</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Runs the script with root privileges</strong>. Used when the script needs to install software system-wide or modify system files.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="section4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">04</span><h2 class="text-2xl font-bold text-white">The Shebang Line — <code class="text-purple-400">#!/bin/bash</code></h2></div>
+          <p class="text-gray-400 mb-6 leading-relaxed">The <strong class="text-white">shebang</strong> (also called hashbang) is the very first line of a script. It tells the operating system <strong class="text-white">which interpreter to use</strong> to execute the script.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Shebang examples</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="shebang">#!/bin/bash</span>    <span class="comment"># Use bash interpreter</span></p>
+              <p><span class="shebang">#!/bin/sh</span>      <span class="comment"># Use sh interpreter (more portable)</span></p>
+              <p><span class="shebang">#!/usr/bin/env python3</span>  <span class="comment"># Use Python 3</span></p>
+              <p><span class="shebang">#!/usr/bin/env zsh</span>      <span class="comment"># Use zsh</span></p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">#!</code>
+              <p class="text-gray-400 text-sm">The <strong class="text-white">shebang</strong> sequence. <code class="inline">#</code> is the comment character in bash, but when combined with <code class="inline">!</code> at the very start of line 1, it becomes a special directive recognized by the kernel.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">/bin/bash</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">The full path to the bash executable</strong>. The kernel reads this path and launches that program to execute your script.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="section5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">05</span><h2 class="text-2xl font-bold text-white">Common Installation Script Pattern</h2></div>
+          <p class="text-gray-400 mb-6 leading-relaxed">A typical Linux installation script follows this structure. Every line explained:</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">install.sh</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="shebang">#!/bin/bash</span></p>
+              <p><span class="cmd">echo</span> <span class="text-green-300">"Installing..."</span></p>
+              <p><span class="flag">sudo</span> <span class="cmd">apt install</span> zsh git curl <span class="flag">-y</span></p>
+              <p><span class="cmd">chsh</span> <span class="flag">-s</span> $(<span class="cmd">which</span> zsh)</p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">echo "Installing..."</code>
+              <p class="text-gray-400 text-sm"><code class="inline">echo</code> <strong class="text-white">prints text to the terminal</strong>. Used for progress messages so the user knows what the script is doing.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-y</code>
+              <p class="text-gray-400 text-sm">Flag that <strong class="text-white">automatically answers "yes"</strong> to all prompts. Essential for automated installations that run without user interaction.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">chsh -s $(which zsh)</code>
+              <p class="text-gray-400 text-sm"><code class="inline">chsh</code> = Change Shell. <code class="inline">-s</code> specifies the new shell path. <code class="inline">$(which zsh)</code> = command substitution (see below)!</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="section6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold text-sm font-mono">06</span><h2 class="text-2xl font-bold text-white">Command Substitution — <code class="text-purple-400">$(...)</code></h2></div>
+          <p class="text-gray-400 mb-6 leading-relaxed"><strong class="text-white">Command substitution</strong> lets you use the output of one command as an argument to another. Syntax: <code class="inline">$(command)</code></p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+            <div class="p-4 text-sm space-y-2">
+              <p><span class="comment"># which finds the full path to a command</span></p>
+              <p><span class="cmd">which</span> zsh</p>
+              <p class="text-gray-500 pl-4">/usr/bin/zsh</p>
+              <p class="mt-2"><span class="comment"># $(...) substitutes that output directly</span></p>
+              <p><span class="cmd">chsh</span> <span class="flag">-s</span> $(<span class="cmd">which</span> zsh)</p>
+              <p class="comment pl-4"># Same as: chsh -s /usr/bin/zsh</p>
+            </div>
+          </div>
+          <div class="highlight-box p-4">
+            <p class="text-purple-300 text-sm font-semibold mb-2">How it works step by step:</p>
+            <ol class="text-gray-400 text-sm space-y-1.5 list-decimal list-inside">
+              <li>Shell sees <code class="inline">$(which zsh)</code> and executes <code class="inline">which zsh</code> first</li>
+              <li><code class="inline">which zsh</code> outputs <code class="inline">/usr/bin/zsh</code></li>
+              <li>Shell substitutes that output into the original command</li>
+              <li>Result: <code class="inline">chsh -s /usr/bin/zsh</code> is what actually runs</li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="section-anchor glass-card rounded-2xl p-6 sm:p-8 border border-purple-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📝</span>
+            <h2 class="text-2xl font-bold text-white">Module 3 Quiz</h2>
+            <span class="ml-auto text-sm font-mono text-purple-400 bg-purple-400/10 px-3 py-1 rounded-full border border-purple-400/20" id="score-display">0 / 8</span>
+          </div>
+          <p class="text-gray-500 text-sm mb-8">Test your knowledge of Linux scripting and permissions.</p>
+          <div id="quiz-container" class="space-y-8"></div>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:from-purple-400 hover:to-pink-400 transition-all">Check All Answers</button>
+            <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-purple-500/50 hover:text-purple-400 transition-all">Reset Quiz</button>
+          </div>
+          <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+        </section>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+          <a href="module2.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-purple-500/50 hover:text-purple-400 transition-all text-sm">← Package Installation</a>
+          <a href="module4.html" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-400 hover:border-purple-400/60 transition-all text-sm font-semibold">Next: Software Installation Methods →</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q:"What does 'chmod' stand for?", opts:["Change Module","Change Mode","Command Handler Override","Create Home on Mount"], correct:1 },
+      { q:"What does 'chmod +x install.sh' do?", opts:["Creates a new script","Deletes the script","Adds execute permission to the script","Compresses the script"], correct:2 },
+      { q:"What is the shebang line in a script?", opts:["A comment that describes what the script does","The first line (#!) that tells the OS which interpreter to use","The last line that exits the script","A debugging tool"], correct:1 },
+      { q:"What does './install.sh' mean?", opts:["Install from the internet","Run install.sh from the current directory","Create install.sh in root dir","Delete install.sh"], correct:1 },
+      { q:"What does the '-y' flag do in 'sudo apt install zsh git curl -y'?", opts:["Runs the installation as root","Automatically answers yes to all prompts","Disables all prompts permanently","Shows verbose output"], correct:1 },
+      { q:"What is command substitution in bash?", opts:["Replacing a script with a new one","Using $(...) to use the output of a command as an argument","Substituting a variable with a constant","Copying a command from history"], correct:1 },
+      { q:"What does 'which zsh' return?", opts:["The version of zsh","The full path to the zsh executable","All users running zsh","The default shell name"], correct:1 },
+      { q:"What does 'bash install.sh' do that './install.sh' does NOT require?", opts:["Root privileges","chmod +x (execute permission)","The shebang line","A home directory"], correct:1 }
+    ];
+    let answers = new Array(questions.length).fill(null), submitted = false;
+    function renderQuiz() {
+      const c = document.getElementById('quiz-container'); c.innerHTML = '';
+      questions.forEach((q,qi) => { const d = document.createElement('div'); d.className = 'border border-gray-800 rounded-xl p-5'; d.innerHTML = `<p class="text-white font-semibold mb-4"><span class="text-purple-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p><div class="space-y-2" id="opts-${qi}">${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" class="quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs font-mono">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div><div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>`; c.appendChild(d); });
+    }
+    function selectAnswer(qi,oi) { if(submitted)return; answers[qi]=oi; document.querySelectorAll(`#opts-${qi} button`).forEach((b,i)=>{ b.className='quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'+(i===oi?' selected':''); }); document.getElementById('score-display').textContent=`${answers.filter(a=>a!==null).length} / ${questions.length}`; }
+    function submitQuiz() { submitted=true; let score=0; questions.forEach((q,qi)=>{ const opts=document.querySelectorAll(`#opts-${qi} button`); opts.forEach((b,i)=>{ b.className='quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'; if(i===q.correct)b.classList.add('correct'); else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong'); }); const fb=document.getElementById(`feedback-${qi}`); fb.classList.remove('hidden'); if(answers[qi]===q.correct){score++;fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';fb.textContent='✓ Correct!';}else{fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';fb.textContent=`✗ Correct: ${q.opts[q.correct]}`;} }); const r=document.getElementById('quiz-result'); r.classList.remove('hidden'); const pct=Math.round((score/questions.length)*100); r.className=`mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-purple-500/30 bg-purple-500/10':'border-red-500/30 bg-red-500/10'}`; r.innerHTML=`<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-purple-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Excellent! Scripting mastered!':pct>=70?'Good job! Keep practicing.':'Review the module and try again!'}</div>`; document.getElementById('score-display').textContent=`${score} / ${questions.length}`; }
+    function resetQuiz() { submitted=false; answers=new Array(questions.length).fill(null); document.getElementById('quiz-result').classList.add('hidden'); document.getElementById('score-display').textContent='0 / 8'; renderQuiz(); }
+    renderQuiz();
+  </script>
+</body>
+</html>

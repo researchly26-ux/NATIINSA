@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 6: Shell Features — NatIvyberNotes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body{background:#030712;font-family:'Inter',sans-serif;}
+    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid rgba(249,115,22,0.12);}
+    .glass-card{background:linear-gradient(135deg,rgba(13,21,38,0.95),rgba(10,15,30,0.98));border:1px solid rgba(249,115,22,0.15);}
+    .terminal-block{background:#0f0800;border:1px solid #f97316;border-radius:10px;font-family:'JetBrains Mono',monospace;overflow:hidden;}
+    .terminal-bar{background:#1a1000;border-bottom:1px solid #f9731633;padding:8px 14px;}
+    .cmd{color:#fdba74;}.flag{color:#86efac;}.comment{color:#4b5563;}.op{color:#fb923c;font-weight:700;}
+    .hl{background:rgba(249,115,22,0.06);border-left:3px solid #f97316;border-radius:0 8px 8px 0;}
+    .hl-green{background:rgba(34,197,94,0.06);border-left:3px solid #22c55e;border-radius:0 8px 8px 0;}
+    .hl-red{background:rgba(239,68,68,0.06);border-left:3px solid #ef4444;border-radius:0 8px 8px 0;}
+    .hl-blue{background:rgba(59,130,246,0.06);border-left:3px solid #3b82f6;border-radius:0 8px 8px 0;}
+    .quiz-opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;cursor:pointer;}
+    .quiz-opt:hover{border-color:rgba(249,115,22,0.4);background:rgba(249,115,22,0.08);}
+    .quiz-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.12);}
+    .quiz-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.12);}
+    .quiz-opt.selected{border-color:#f97316;background:rgba(249,115,22,0.12);}
+    code.il{background:rgba(249,115,22,0.12);color:#fdba74;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.875em;}
+    .sa{scroll-margin-top:80px;}
+    .operator-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1em;}
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-orange-500/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center"><span class="text-black font-black text-xs">N</span></div><span class="font-bold text-sm"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span></a>
+      <div class="flex items-center gap-3"><a href="module5.html" class="text-gray-500 text-sm hidden sm:block">← Shell</a><a href="quiz.html" class="px-3 py-1.5 rounded-lg glass border border-orange-500/20 text-orange-400 text-xs">Master Quiz →</a></div>
+    </div>
+  </nav>
+
+  <div class="min-h-screen pt-16" style="background-image:linear-gradient(rgba(249,115,22,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(249,115,22,0.04) 1px,transparent 1px);background-size:40px 40px;">
+    <div class="py-16 px-4 text-center border-b border-gray-800/50" style="background:linear-gradient(to bottom,rgba(120,53,15,0.15),transparent);">
+      <span class="inline-block px-3 py-1 rounded-full text-xs font-mono mb-6 border border-orange-500/30 bg-orange-500/10 text-orange-300">MODULE 06 / 06 — FINAL</span>
+      <div class="text-5xl mb-4">⚡</div>
+      <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Shell Features: <span class="text-orange-400">OR, AND, Piping</span></h1>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">Master the <code style="color:#fb923c;font-family:'JetBrains Mono'">&&</code>, <code style="color:#fb923c;font-family:'JetBrains Mono'">||</code>, and <code style="color:#fb923c;font-family:'JetBrains Mono'">|</code> operators plus I/O redirection — the most powerful shell productivity tools.</p>
+      <!-- Operator Pills -->
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <span class="operator-badge bg-green-900/40 border border-green-500/40 text-green-300">&amp;&amp; AND</span>
+        <span class="operator-badge bg-red-900/40 border border-red-500/40 text-red-300">|| OR</span>
+        <span class="operator-badge bg-blue-900/40 border border-blue-500/40 text-blue-300">| PIPE</span>
+        <span class="operator-badge bg-orange-900/40 border border-orange-500/40 text-orange-300">&gt; REDIRECT</span>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-12 space-y-10">
+
+      <!-- AND operator -->
+      <div id="and" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 font-bold text-sm">01</span>
+          <h2 class="text-2xl font-bold text-white">AND Operator — <code style="color:#86efac;font-family:'JetBrains Mono'">&amp;&amp;</code></h2>
+          <span class="px-2 py-0.5 rounded text-xs bg-green-500/10 border border-green-500/30 text-green-300">Run 2nd only if 1st SUCCEEDS</span>
+        </div>
+        <p class="text-gray-400 mb-4 leading-relaxed">The <strong class="text-white">&amp;&amp;</strong> operator executes the second command <strong class="text-white">only if the first command completes successfully</strong> (returns exit code 0). If the first command fails, the second command is <em>skipped</em>.</p>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-2">
+            <p><span class="comment"># Classic AND example: update THEN upgrade</span></p>
+            <p><span class="flag">sudo</span> <span class="cmd">apt update</span> <span class="op">&amp;&amp;</span> <span class="flag">sudo</span> <span class="cmd">apt upgrade</span></p>
+            <p class="mt-2"><span class="comment"># Chain multiple commands</span></p>
+            <p><span class="cmd">mkdir</span> project <span class="op">&amp;&amp;</span> <span class="cmd">cd</span> project <span class="op">&amp;&amp;</span> <span class="cmd">git init</span></p>
+            <p class="mt-2"><span class="comment"># Compile steps (each depends on the previous)</span></p>
+            <p><span class="cmd">./configure</span> <span class="op">&amp;&amp;</span> <span class="cmd">make</span> <span class="op">&amp;&amp;</span> <span class="flag">sudo</span> <span class="cmd">make install</span></p>
+          </div>
+        </div>
+        <div class="hl-green p-4 mb-4">
+          <p class="text-green-300 font-semibold text-sm mb-2">How &amp;&amp; works — step by step:</p>
+          <ol class="text-gray-400 text-sm space-y-1 list-decimal list-inside">
+            <li><code class="il">sudo apt update</code> runs first</li>
+            <li>If it <strong class="text-green-300">SUCCEEDS</strong> (exit code 0): <code class="il">sudo apt upgrade</code> runs</li>
+            <li>If it <strong class="text-red-400">FAILS</strong> (non-zero exit code): <code class="il">sudo apt upgrade</code> is SKIPPED</li>
+          </ol>
+        </div>
+        <div class="hl p-3">
+          <p class="text-gray-400 text-sm"><strong class="text-white">Exit codes:</strong> Every Linux command returns an exit code when it finishes. <code class="il">0</code> = success, <code class="il">1-255</code> = error. The <code class="il">&amp;&amp;</code> operator checks this code to decide whether to continue.</p>
+        </div>
+      </div>
+
+      <!-- OR operator -->
+      <div id="or" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400 font-bold text-sm">02</span>
+          <h2 class="text-2xl font-bold text-white">OR Operator — <code style="color:#fca5a5;font-family:'JetBrains Mono'">||</code></h2>
+          <span class="px-2 py-0.5 rounded text-xs bg-red-500/10 border border-red-500/30 text-red-300">Run 2nd only if 1st FAILS</span>
+        </div>
+        <p class="text-gray-400 mb-4 leading-relaxed">The <strong class="text-white">||</strong> operator executes the second command <strong class="text-white">only if the first command FAILS</strong> (returns a non-zero exit code). Perfect for fallback actions and error handling.</p>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-2">
+            <p><span class="comment"># Test internet connection — show message if it fails</span></p>
+            <p><span class="cmd">ping</span> <span class="flag">-c1</span> google.com <span class="op">||</span> <span class="cmd">echo</span> <span class="text-green-300">"No internet connection!"</span></p>
+            <p class="mt-2"><span class="comment"># Try to create dir, or show error</span></p>
+            <p><span class="cmd">mkdir</span> /tmp/test <span class="op">||</span> <span class="cmd">echo</span> <span class="text-green-300">"Directory creation failed"</span></p>
+            <p class="mt-2"><span class="comment"># Try command, fall back to alternative</span></p>
+            <p><span class="cmd">vim</span> file.txt <span class="op">||</span> <span class="cmd">nano</span> file.txt</p>
+          </div>
+        </div>
+        <div class="hl-red p-4">
+          <p class="text-red-300 font-semibold text-sm mb-2">How || works — step by step:</p>
+          <ol class="text-gray-400 text-sm space-y-1 list-decimal list-inside">
+            <li><code class="il">ping -c1 google.com</code> tries to reach Google</li>
+            <li>If it <strong class="text-green-300">SUCCEEDS</strong>: <code class="il">echo "No internet"</code> is SKIPPED</li>
+            <li>If it <strong class="text-red-400">FAILS</strong>: <code class="il">echo "No internet"</code> runs as the fallback</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Pipe -->
+      <div id="pipe" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-sm">03</span>
+          <h2 class="text-2xl font-bold text-white">Pipe Operator — <code style="color:#93c5fd;font-family:'JetBrains Mono'">|</code></h2>
+          <span class="px-2 py-0.5 rounded text-xs bg-blue-500/10 border border-blue-500/30 text-blue-300">Pass output as input</span>
+        </div>
+        <p class="text-gray-400 mb-4 leading-relaxed">The <strong class="text-white">pipe (|)</strong> takes the <strong class="text-white">output (stdout)</strong> from the left command and passes it as <strong class="text-white">input (stdin)</strong> to the right command. This lets you chain commands together to process data step by step.</p>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-2">
+            <p><span class="comment"># List files, then filter only .sh files</span></p>
+            <p><span class="cmd">ls -la</span> <span class="op">|</span> <span class="cmd">grep</span> <span class="text-green-300">".sh"</span></p>
+            <p class="mt-2"><span class="comment"># Read passwd file, show only lines with "root"</span></p>
+            <p><span class="cmd">cat</span> /etc/passwd <span class="op">|</span> <span class="cmd">grep</span> root</p>
+            <p class="mt-2"><span class="comment"># List all processes, find only Firefox</span></p>
+            <p><span class="cmd">ps aux</span> <span class="op">|</span> <span class="cmd">grep</span> firefox</p>
+            <p class="mt-2"><span class="comment"># Count lines in a file</span></p>
+            <p><span class="cmd">cat</span> /etc/passwd <span class="op">|</span> <span class="cmd">wc -l</span></p>
+            <p class="mt-2"><span class="comment"># Chain multiple pipes</span></p>
+            <p><span class="cmd">ps aux</span> <span class="op">|</span> <span class="cmd">grep</span> firefox <span class="op">|</span> <span class="cmd">awk</span> '{print $2}'</p>
+          </div>
+        </div>
+        <div class="hl-blue p-4 mb-4">
+          <p class="text-blue-300 font-semibold text-sm mb-2">What is grep?</p>
+          <p class="text-gray-400 text-sm"><code class="il">grep</code> stands for <strong class="text-white">"Global Regular Expression Print"</strong>. It searches for lines matching a pattern and displays them. One of the most powerful and commonly used Linux commands — especially useful after pipes for filtering output.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div class="hl p-3"><code class="il">ls -la | grep ".sh"</code><p class="text-gray-500 text-xs mt-1">Lists all files, filters to show only .sh files</p></div>
+          <div class="hl p-3"><code class="il">cat /etc/passwd | grep root</code><p class="text-gray-500 text-xs mt-1">Shows passwd file, filters to root lines only</p></div>
+        </div>
+      </div>
+
+      <!-- Combining all three -->
+      <div id="combined" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-sm">04</span><h2 class="text-2xl font-bold text-white">Combining All Three Operators</h2></div>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm">
+            <p><span class="flag">sudo</span> <span class="cmd">apt update</span> <span class="op">&amp;&amp;</span> <span class="flag">sudo</span> <span class="cmd">apt install</span> nmap <span class="op">||</span> <span class="cmd">echo</span> <span class="text-green-300">"Install failed"</span></p>
+          </div>
+        </div>
+        <div class="hl p-4">
+          <p class="text-orange-300 font-semibold text-sm mb-2">This complex command explained:</p>
+          <ol class="text-gray-400 text-sm space-y-1.5 list-decimal list-inside">
+            <li><code class="il">sudo apt update</code> runs first</li>
+            <li>If it <span class="text-green-300">succeeds</span>: <code class="il">sudo apt install nmap</code> runs (because of <code class="il">&amp;&amp;</code>)</li>
+            <li>If the install <span class="text-green-300">succeeds</span>: <code class="il">echo "Install failed"</code> is SKIPPED</li>
+            <li>If the install <span class="text-red-300">fails</span>: <code class="il">echo "Install failed"</code> runs (because of <code class="il">||</code>)</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- I/O Redirection -->
+      <div id="redirect" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-sm">05</span><h2 class="text-2xl font-bold text-white">I/O Redirection — <code style="color:#fdba74;font-family:'JetBrains Mono'">&gt;  &gt;&gt;  2&gt;  &amp;&gt;</code></h2></div>
+        <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">Redirection</strong> allows you to send command output to files instead of the terminal. There are two types of output: <strong class="text-white">stdout</strong> (standard output, normal results) and <strong class="text-white">stderr</strong> (standard error, error messages).</p>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="cmd">command</span> <span class="op">&gt;</span>  file.txt    <span class="comment"># Write stdout to file (OVERWRITES)</span></p>
+            <p><span class="cmd">command</span> <span class="op">&gt;&gt;</span> file.txt    <span class="comment"># Append stdout to file (keeps existing)</span></p>
+            <p><span class="cmd">command</span> <span class="op">2&gt;</span> error.log   <span class="comment"># Redirect stderr (errors) to file</span></p>
+            <p><span class="cmd">command</span> <span class="op">&amp;&gt;</span> all.log      <span class="comment"># Redirect BOTH stdout and stderr</span></p>
+            <p class="mt-2"><span class="comment"># Real examples</span></p>
+            <p><span class="cmd">ls /nonexistent</span> <span class="op">2&gt;</span> errors.txt</p>
+            <p><span class="cmd">echo</span> "New log entry" <span class="op">&gt;&gt;</span> app.log</p>
+            <p><span class="cmd">apt update</span> <span class="op">&amp;&gt;</span> update.log</p>
+          </div>
+        </div>
+        <div class="space-y-2 mb-4">
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">&gt;</code><p class="text-gray-400 text-sm"><strong class="text-white">Overwrites</strong> the file with stdout. Careful — previous content is lost! Creates the file if it doesn't exist.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">&gt;&gt;</code><p class="text-gray-400 text-sm"><strong class="text-white">Appends</strong> stdout to the file. Safer — keeps existing content and adds new output at the end. Perfect for log files.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">2&gt;</code><p class="text-gray-400 text-sm">Redirects <strong class="text-white">stderr only</strong> (error messages). The <code class="il">2</code> is the file descriptor for stderr. Use to capture errors separately.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">&amp;&gt;</code><p class="text-gray-400 text-sm">Redirects <strong class="text-white">both stdout AND stderr</strong> to the same file. The <code class="il">&amp;</code> means "both streams".</p></div>
+        </div>
+        <div class="bg-orange-900/20 border border-orange-500/30 rounded-xl p-4 text-sm">
+          <p class="text-orange-300 font-semibold mb-1">⚠️ Critical Difference: &gt; vs &gt;&gt;</p>
+          <p class="text-gray-400"><code class="il">&gt;</code> <strong class="text-red-300">OVERWRITES</strong> the file every time — all previous content is permanently deleted. <code class="il">&gt;&gt;</code> <strong class="text-green-300">APPENDS</strong> — safe for log files. Always double-check which one you need!</p>
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz" class="sa glass-card rounded-2xl p-6 sm:p-8 border border-orange-500/30">
+        <div class="flex items-center gap-3 mb-2"><span class="text-3xl">📝</span><h2 class="text-2xl font-bold text-white">Module 6 Quiz</h2><span class="ml-auto text-sm font-mono text-orange-400 bg-orange-400/10 px-3 py-1 rounded-full border border-orange-400/20" id="score-display">0 / 10</span></div>
+        <p class="text-gray-500 text-sm mb-8">Test your knowledge of shell operators and redirection.</p>
+        <div id="quiz-container" class="space-y-8"></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold hover:from-orange-400 hover:to-red-400 transition-all">Check Answers</button>
+          <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-orange-500/50 hover:text-orange-400 transition-all">Reset</button>
+        </div>
+        <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-8 text-center border border-teal-500/30">
+        <div class="text-4xl mb-4">🏆</div>
+        <h3 class="text-2xl font-bold text-white mb-2">You finished all 6 modules!</h3>
+        <p class="text-gray-500 mb-6">Now take the master quiz to test your complete Linux knowledge.</p>
+        <a href="quiz.html" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-bold text-lg hover:from-teal-400 hover:to-cyan-400 transition-all shadow-lg shadow-teal-500/30">Take the Master Quiz →</a>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+        <a href="module5.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-orange-500/50 hover:text-orange-400 transition-all text-sm">← The Shell</a>
+        <a href="index.html" class="flex items-center gap-2 px-6 py-3 rounded-xl border border-teal-500/30 bg-teal-500/10 text-teal-400 transition-all text-sm">Back to All Modules</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions=[
+      {q:"What does the && operator do?",opts:["Runs both commands simultaneously","Runs 2nd command only if 1st succeeds","Runs 2nd command only if 1st fails","Combines command output"],correct:1},
+      {q:"What does the || operator do?",opts:["Runs both commands always","Runs 2nd command only if 1st succeeds","Runs 2nd command only if 1st fails","Combines command output into one"],correct:2},
+      {q:"What does '|' (pipe) do?",opts:["Redirects output to a file","Passes output of left command as input to right command","Runs two commands in parallel","Combines two files together"],correct:1},
+      {q:"What does 'grep' stand for?",opts:["Get Regular Expression Prompt","Global Regular Expression Print","General Result Expression Parser","Group Result Expression Processor"],correct:1},
+      {q:"What does 'command > file.txt' do?",opts:["Appends stdout to file.txt","Overwrites file.txt with stdout","Reads from file.txt","Redirects stderr to file.txt"],correct:1},
+      {q:"What is the difference between > and >> ?",opts:["No difference, they are the same","> appends, >> overwrites","> overwrites, >> appends","> is for stderr, >> is for stdout"],correct:2},
+      {q:"What does '2>' redirect?",opts:["Both stdout and stderr","Standard input only","Standard error (error messages) only","The exit code of the command"],correct:2},
+      {q:"What does '&>' redirect?",opts:["Only stdout","Only stderr","Both stdout and stderr","Neither — it runs in background"],correct:2},
+      {q:"In 'ls -la | grep .sh', what does grep do?",opts:["Lists .sh files","Filters the ls output to show only lines containing .sh","Deletes .sh files","Renames .sh files"],correct:1},
+      {q:"When would you use || instead of &&?",opts:["When you want commands to run in parallel","When you want fallback/error handling if a command fails","When you need to redirect output","When you want to combine file content"],correct:1}
+    ];
+    let answers=new Array(questions.length).fill(null),submitted=false;
+    function renderQuiz(){const c=document.getElementById('quiz-container');c.innerHTML='';questions.forEach((q,qi)=>{const d=document.createElement('div');d.className='border border-gray-800 rounded-xl p-5';d.innerHTML=`<p class="text-white font-semibold mb-4"><span class="text-orange-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p><div class="space-y-2" id="opts-${qi}">${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" class="quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div><div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>`;c.appendChild(d);});}
+    function selectAnswer(qi,oi){if(submitted)return;answers[qi]=oi;document.querySelectorAll(`#opts-${qi} button`).forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'+(i===oi?' selected':'');});document.getElementById('score-display').textContent=`${answers.filter(a=>a!==null).length} / ${questions.length}`;}
+    function submitQuiz(){submitted=true;let score=0;questions.forEach((q,qi)=>{const opts=document.querySelectorAll(`#opts-${qi} button`);opts.forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3';if(i===q.correct)b.classList.add('correct');else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong');});const fb=document.getElementById(`feedback-${qi}`);fb.classList.remove('hidden');if(answers[qi]===q.correct){score++;fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';fb.textContent='✓ Correct!';}else{fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';fb.textContent=`✗ Correct: ${q.opts[q.correct]}`;}}); const r=document.getElementById('quiz-result');r.classList.remove('hidden');const pct=Math.round((score/questions.length)*100);r.className=`mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-orange-500/30 bg-orange-500/10':'border-red-500/30 bg-red-500/10'}`;r.innerHTML=`<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-orange-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Shell operator master!':pct>=70?'Great work! Ready for the master quiz!':'Review the operators above and try again.'}</div>`;document.getElementById('score-display').textContent=`${score} / ${questions.length}`;}
+    function resetQuiz(){submitted=false;answers=new Array(questions.length).fill(null);document.getElementById('quiz-result').classList.add('hidden');document.getElementById('score-display').textContent='0 / 10';renderQuiz();}
+    renderQuiz();
+  </script>
+</body>
+</html>

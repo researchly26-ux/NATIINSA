@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 5: The Shell — NatIvyberNotes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body{background:#030712;font-family:'Inter',sans-serif;}
+    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid rgba(34,197,94,0.12);}
+    .glass-card{background:linear-gradient(135deg,rgba(13,21,38,0.95),rgba(10,15,30,0.98));border:1px solid rgba(34,197,94,0.15);}
+    .terminal-block{background:#050f07;border:1px solid #22c55e;border-radius:10px;font-family:'JetBrains Mono',monospace;overflow:hidden;}
+    .terminal-bar{background:#0a1a0d;border-bottom:1px solid #22c55e33;padding:8px 14px;}
+    .cmd{color:#86efac;}.flag{color:#fbbf24;}.comment{color:#4b5563;}
+    .hl{background:rgba(34,197,94,0.06);border-left:3px solid #22c55e;border-radius:0 8px 8px 0;}
+    .quiz-opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;cursor:pointer;}
+    .quiz-opt:hover{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.08);}
+    .quiz-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.12);}
+    .quiz-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.12);}
+    .quiz-opt.selected{border-color:#22c55e;background:rgba(34,197,94,0.12);}
+    code.il{background:rgba(34,197,94,0.12);color:#86efac;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.875em;}
+    .sa{scroll-margin-top:80px;}
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-green-500/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center"><span class="text-black font-black text-xs">N</span></div><span class="font-bold text-sm"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span></a>
+      <div class="flex items-center gap-3"><a href="module4.html" class="text-gray-500 text-sm hidden sm:block">← Install Methods</a><a href="module6.html" class="px-3 py-1.5 rounded-lg glass border border-green-500/20 text-green-400 text-xs">Next: Shell Features →</a></div>
+    </div>
+  </nav>
+
+  <div class="min-h-screen pt-16" style="background-image:linear-gradient(rgba(34,197,94,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,0.04) 1px,transparent 1px);background-size:40px 40px;">
+    <div class="py-16 px-4 text-center border-b border-gray-800/50" style="background:linear-gradient(to bottom,rgba(5,46,22,0.15),transparent);">
+      <span class="inline-block px-3 py-1 rounded-full text-xs font-mono mb-6 border border-green-500/30 bg-green-500/10 text-green-300">MODULE 05 / 06</span>
+      <div class="text-5xl mb-4">🐚</div>
+      <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">The <span class="text-green-400">Shell</span></h1>
+      <p class="text-gray-400 text-lg max-w-xl mx-auto">What is a shell? Types of shells — sh, bash, zsh, fish, dash — and all shell-related commands explained in detail.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-12 space-y-10">
+
+      <!-- What is shell -->
+      <div id="section1" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 font-bold text-sm">01</span><h2 class="text-2xl font-bold text-white">What is a Shell?</h2></div>
+        <p class="text-gray-400 mb-6 leading-relaxed">A <strong class="text-white">shell</strong> is a <strong class="text-white">command-line interpreter</strong> that reads your commands and executes them. It's the interface between <strong class="text-white">you</strong> and the <strong class="text-white">operating system kernel</strong>. The shell processes your input, finds the program you want to run, and executes it.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-2">👤</div><div class="text-sm font-bold text-white mb-1">You</div><div class="text-xs text-gray-500">Type commands</div>
+          </div>
+          <div class="bg-green-900/20 border border-green-700/30 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-2">🐚</div><div class="text-sm font-bold text-green-400 mb-1">Shell</div><div class="text-xs text-gray-500">Interprets &amp; executes</div>
+          </div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-center">
+            <div class="text-2xl mb-2">⚙️</div><div class="text-sm font-bold text-white mb-1">Kernel</div><div class="text-xs text-gray-500">Controls hardware</div>
+          </div>
+        </div>
+        <div class="hl p-4 text-sm">
+          <p class="text-green-300 font-semibold mb-1">💡 Key Point:</p>
+          <p class="text-gray-400">The shell is NOT the terminal. The <strong class="text-white">terminal</strong> is the window/application you see. The <strong class="text-white">shell</strong> is the program running inside that terminal interpreting your commands.</p>
+        </div>
+      </div>
+
+      <!-- Types of Shells -->
+      <div id="section2" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 font-bold text-sm">02</span><h2 class="text-2xl font-bold text-white">Types of Shells</h2></div>
+        <div class="overflow-x-auto mb-6">
+          <table class="w-full text-sm">
+            <thead><tr class="border-b border-gray-700"><th class="text-left py-3 px-3 text-green-400">Shell</th><th class="text-left py-3 px-3 text-green-400">Full Name</th><th class="text-left py-3 px-3 text-green-400">Explanation</th></tr></thead>
+            <tbody class="divide-y divide-gray-800">
+              <tr><td class="py-3 px-3 font-mono text-green-300 font-bold">sh</td><td class="py-3 px-3 text-white">Bourne Shell</td><td class="py-3 px-3 text-gray-400">The original Unix shell. Very basic and POSIX-compliant. Foundation for all modern shells.</td></tr>
+              <tr class="bg-gray-900/30"><td class="py-3 px-3 font-mono text-green-300 font-bold">bash</td><td class="py-3 px-3 text-white">Bourne Again Shell</td><td class="py-3 px-3 text-gray-400">Most common shell — <strong class="text-white">default on most Linux distros</strong>. Extends sh with many powerful features.</td></tr>
+              <tr><td class="py-3 px-3 font-mono text-green-300 font-bold">zsh</td><td class="py-3 px-3 text-white">Z Shell</td><td class="py-3 px-3 text-gray-400">Feature-rich shell with powerful customization. Used with Oh My Zsh + Powerlevel10k themes.</td></tr>
+              <tr class="bg-gray-900/30"><td class="py-3 px-3 font-mono text-green-300 font-bold">fish</td><td class="py-3 px-3 text-white">Friendly Interactive Shell</td><td class="py-3 px-3 text-gray-400">User-friendly with great defaults. Modern syntax with syntax highlighting built in. Great for beginners.</td></tr>
+              <tr><td class="py-3 px-3 font-mono text-green-300 font-bold">dash</td><td class="py-3 px-3 text-white">Debian Almquist Shell</td><td class="py-3 px-3 text-gray-400">Lightweight and very fast. Used for system scripts where speed matters more than features.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+            <p class="text-green-400 font-semibold text-sm mb-2">🏆 Most Common: bash</p>
+            <p class="text-gray-500 text-xs">Default on Ubuntu, Debian, Kali, CentOS, RHEL, and most Linux distros. If you're unsure what shell to learn, start with bash.</p>
+          </div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+            <p class="text-purple-400 font-semibold text-sm mb-2">⭐ Power User: zsh</p>
+            <p class="text-gray-500 text-xs">Default on macOS. Combined with Oh My Zsh plugin framework offers unmatched customization and productivity.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shell Commands -->
+      <div id="section3" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 font-bold text-sm">03</span><h2 class="text-2xl font-bold text-white">Shell-Related Commands</h2></div>
+        <div class="terminal-block mb-6">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="cmd">echo</span> $SHELL         <span class="comment"># See your current shell</span></p>
+            <p><span class="cmd">cat</span> /etc/shells     <span class="comment"># List all installed shells on the system</span></p>
+            <p><span class="cmd">chsh</span> <span class="flag">-s</span> /bin/zsh    <span class="comment"># Change your default shell to zsh</span></p>
+            <p><span class="cmd">which</span> bash           <span class="comment"># Find the path to bash</span></p>
+            <p><span class="cmd">bash</span> <span class="flag">--version</span>      <span class="comment"># Check bash version</span></p>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">echo $SHELL</code><p class="text-gray-400 text-sm">Displays the <strong class="text-white">path to your current shell</strong> (e.g. <code class="il">/bin/bash</code>). The <code class="il">$</code> sign indicates a variable. <code class="il">SHELL</code> is an <strong class="text-white">environment variable</strong> storing your current shell path.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">cat /etc/shells</code><p class="text-gray-400 text-sm">Shows <strong class="text-white">all available shells installed</strong> on the system. The file <code class="il">/etc/shells</code> lists valid login shells.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">chsh -s /bin/zsh</code><p class="text-gray-400 text-sm"><code class="il">chsh</code> = Change Shell. <code class="il">-s</code> = specify the new shell. <strong class="text-white">Changes your default login shell</strong>. Takes effect on next login — not immediately!</p></div>
+        </div>
+      </div>
+
+      <!-- Variables & $SHELL -->
+      <div id="section4" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 font-bold text-sm">04</span><h2 class="text-2xl font-bold text-white">Shell Variables &amp; Environment</h2></div>
+        <p class="text-gray-400 mb-4 leading-relaxed">The <strong class="text-white">dollar sign ($)</strong> indicates a variable in the shell. <code class="il">SHELL</code> is an <strong class="text-white">environment variable</strong> — a named container that holds a value accessible throughout your session.</p>
+        <div class="terminal-block mb-4">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="comment"># Key environment variables</span></p>
+            <p><span class="cmd">echo</span> $SHELL        <span class="comment"># /bin/bash</span></p>
+            <p><span class="cmd">echo</span> $HOME         <span class="comment"># /home/username</span></p>
+            <p><span class="cmd">echo</span> $PATH         <span class="comment"># directories searched for commands</span></p>
+            <p><span class="cmd">echo</span> $USER         <span class="comment"># current username</span></p>
+            <p><span class="cmd">env</span>               <span class="comment"># list ALL environment variables</span></p>
+          </div>
+        </div>
+        <div class="hl p-4 text-sm">
+          <p class="text-green-300 font-semibold mb-2">💡 The PATH variable:</p>
+          <p class="text-gray-400">When you type a command like <code class="il">ls</code>, the shell searches each directory in your <code class="il">$PATH</code> for an executable named <code class="il">ls</code>. That's why you can type command names without their full path!</p>
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz" class="sa glass-card rounded-2xl p-6 sm:p-8 border border-green-500/30">
+        <div class="flex items-center gap-3 mb-2"><span class="text-3xl">📝</span><h2 class="text-2xl font-bold text-white">Module 5 Quiz</h2><span class="ml-auto text-sm font-mono text-green-400 bg-green-400/10 px-3 py-1 rounded-full border border-green-400/20" id="score-display">0 / 9</span></div>
+        <p class="text-gray-500 text-sm mb-8">Test your knowledge of Linux shells.</p>
+        <div id="quiz-container" class="space-y-8"></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-teal-500 text-black font-bold hover:from-green-400 hover:to-teal-400 transition-all">Check Answers</button>
+          <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-green-500/50 hover:text-green-400 transition-all">Reset</button>
+        </div>
+        <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+        <a href="module4.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-green-500/50 hover:text-green-400 transition-all text-sm">← Software Methods</a>
+        <a href="module6.html" class="flex items-center gap-2 px-6 py-3 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 hover:border-green-400/60 transition-all text-sm font-semibold">Next: Shell Features (Final Module) →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions=[
+      {q:"What is a shell in Linux?",opts:["A container for storing files","The physical terminal hardware","A command-line interpreter between user and kernel","A type of Linux distribution"],correct:2},
+      {q:"What does 'bash' stand for?",opts:["Basic Advanced Shell Handler","Bourne Again Shell","Bash And Shell Handler","Binary Advanced Shell"],correct:1},
+      {q:"Which shell is the default on most Linux distributions?",opts:["zsh","fish","sh","bash"],correct:3},
+      {q:"What does 'echo $SHELL' display?",opts:["The shell's version number","The path to your current shell","All installed shells","The shell's man page"],correct:1},
+      {q:"Which command lists all installed shells on a Linux system?",opts:["ls /shells","echo $SHELL","cat /etc/shells","which shells"],correct:2},
+      {q:"What does 'chsh -s /bin/zsh' do?",opts:["Installs zsh on the system","Changes the default shell to zsh","Creates a zsh configuration file","Checks the zsh shell version"],correct:1},
+      {q:"What does the dollar sign ($) indicate in the shell?",opts:["Root user mode","A comment","A variable reference","A command separator"],correct:2},
+      {q:"Which shell is known for being 'Friendly Interactive' and great for beginners?",opts:["sh","bash","dash","fish"],correct:3},
+      {q:"When does a shell change made with 'chsh' take effect?",opts:["Immediately","After running 'source ~/.bashrc'","On the next login/new terminal session","After rebooting the system"],correct:2}
+    ];
+    let answers=new Array(questions.length).fill(null),submitted=false;
+    function renderQuiz(){const c=document.getElementById('quiz-container');c.innerHTML='';questions.forEach((q,qi)=>{const d=document.createElement('div');d.className='border border-gray-800 rounded-xl p-5';d.innerHTML=`<p class="text-white font-semibold mb-4"><span class="text-green-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p><div class="space-y-2" id="opts-${qi}">${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" class="quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div><div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>`;c.appendChild(d);});}
+    function selectAnswer(qi,oi){if(submitted)return;answers[qi]=oi;document.querySelectorAll(`#opts-${qi} button`).forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'+(i===oi?' selected':'');});document.getElementById('score-display').textContent=`${answers.filter(a=>a!==null).length} / ${questions.length}`;}
+    function submitQuiz(){submitted=true;let score=0;questions.forEach((q,qi)=>{const opts=document.querySelectorAll(`#opts-${qi} button`);opts.forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3';if(i===q.correct)b.classList.add('correct');else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong');});const fb=document.getElementById(`feedback-${qi}`);fb.classList.remove('hidden');if(answers[qi]===q.correct){score++;fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';fb.textContent='✓ Correct!';}else{fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';fb.textContent=`✗ Correct: ${q.opts[q.correct]}`;}}); const r=document.getElementById('quiz-result');r.classList.remove('hidden');const pct=Math.round((score/questions.length)*100);r.className=`mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-green-500/30 bg-green-500/10':'border-red-500/30 bg-red-500/10'}`;r.innerHTML=`<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-green-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Shell expert!':pct>=70?'Good job!':'Review and try again.'}</div>`;document.getElementById('score-display').textContent=`${score} / ${questions.length}`;}
+    function resetQuiz(){submitted=false;answers=new Array(questions.length).fill(null);document.getElementById('quiz-result').classList.add('hidden');document.getElementById('score-display').textContent='0 / 9';renderQuiz();}
+    renderQuiz();
+  </script>
+</body>
+</html>

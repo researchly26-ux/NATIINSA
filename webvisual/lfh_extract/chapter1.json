@@ -1,0 +1,1014 @@
+[
+  {
+    "style": "Body Text",
+    "text": "After logging in as root, you will be greeted with the Kali Linux desktop, as in Figure 17."
+  },
+  {
+    "style": "Normal",
+    "text": "Figure 17: The Kali home screen"
+  },
+  {
+    "style": "Body Text",
+    "text": "You are now ready to begin your journey into the exciting field of hacking! Welcome!"
+  },
+  {
+    "style": "Heading 1",
+    "text": "1"
+  },
+  {
+    "style": "Heading 2",
+    "text": "G E T TI N G S T A R TE D W I TH T H E B A S I C S"
+  },
+  {
+    "style": "Normal",
+    "text": "By our very nature, hackers are doers. We want to touch and play with things. We also want to create and, sometimes, break"
+  },
+  {
+    "style": "Normal",
+    "text": "things. Few of us want to read long tomes of information technology theory before we can do what we love most: hacking. With that in mind, this chapter is designed to give you some fundamental skills to get you up and running in Kali . . . now!"
+  },
+  {
+    "style": "Body Text",
+    "text": "In this chapter, we won’t go into any one concept in great detail—we’ll cover just enough to let you play and explore in the operating system of hackers: Linux. We will save more in-depth discussions for later chapters."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Introductory Terms and Concepts"
+  },
+  {
+    "style": "Body Text",
+    "text": "Before we begin our journey through the wonderful world of Linux Basics for Hackers, I want to introduce a few terms that should clarify some con- cepts discussed later in this chapter."
+  },
+  {
+    "style": "Body Text",
+    "text": "Binaries This term refers to files that can be executed, similar to executables in Windows. Binaries generally reside in the /usr/bin or usr/sbin directory and include utilities such as ps, cat, ls, and ifconfig (we’ll touch on all of four of these in this chapter) as well as applica- tions such as the wireless hacking tool aircrack-ng and the intrusion detection system (IDS) Snort."
+  },
+  {
+    "style": "Body Text",
+    "text": "Case sensitivity  Unlike Windows, the Linux filesystem is case sensi- tive. This means that Desktop is different from desktop, which is different from DeskTop. Each of these would represent a different file or directory name. Many people coming from a Windows environment can find this frustrating. If you get the error message “file or directory not found” and you are sure the file or directory exists, you probably need to check your case."
+  },
+  {
+    "style": "Body Text",
+    "text": "Directory This is the same as a folder in Windows. A directory pro- vides a way of organizing files, usually in a hierarchical manner."
+  },
+  {
+    "style": "Body Text",
+    "text": "Home\tEach user has their own /home directory, and this is generally where files you create will be saved by default."
+  },
+  {
+    "style": "Body Text",
+    "text": "Kali  Kali Linux is a distribution of Linux specifically designed for penetration testing. It has hundreds of tools preinstalled, saving you the hours it would take to download and install them yourself. I will be using the latest version of Kali at the time of this writing: Kali 2018.2, first released in April 2018."
+  },
+  {
+    "style": "Body Text",
+    "text": "root  Like nearly every operating system, Linux has an administrator or superuser account, designed for use by a trusted person who can do nearly anything on the system. This would include such things as recon- figuring the system, adding users, and changing passwords. In Linux, that account is called root. As a hacker or pentester, you will often use the root account to give yourself control over the system. In fact, many hacker tools require that you use the root account."
+  },
+  {
+    "style": "Body Text",
+    "text": "Script  This is a series of commands run in an interpretive environ- ment that converts each line to source code. Many hacking tools are simply scripts. Scripts can be run with the bash interpreter or any of the other scripting language interpreters, such as Python, Perl, or Ruby. Python is currently the most popular interpreter among hackers."
+  },
+  {
+    "style": "Body Text",
+    "text": "Shell  This is an environment and interpreter for running commands in Linux. The most widely used shell is bash, which stands for Bourne- again shell, but other popular shells include the C shell and Z shell. I will be using the bash shell exclusively in this book."
+  },
+  {
+    "style": "Normal",
+    "text": "Terminal  This is a command line interface (CLI)."
+  },
+  {
+    "style": "Body Text",
+    "text": "With those basics behind us, we will attempt to methodically develop the essential Linux skills you’ll need to become a hacker or penetration tes- ter. In this first chapter, I’ll walk you through getting started with Kali Linux."
+  },
+  {
+    "style": "Heading 4",
+    "text": "A Tour of Kali"
+  },
+  {
+    "style": "Body Text",
+    "text": "Once you start Kali, you’ll be greeted with a login screen, as shown in Figure 1-1. Log in using the root account username root and the default password toor (if you changed the password earlier, use your new password here)."
+  },
+  {
+    "style": "Normal",
+    "text": "Figure 1-1: Logging into Kali using the root account"
+  },
+  {
+    "style": "Body Text",
+    "text": "You should now have access to your Kali desktop (see Figure 1-2). We’ll quickly look at two of the most basic aspects of the desktop: the terminal interface and file structure."
+  },
+  {
+    "style": "Normal",
+    "text": "Figure 1-2: The Kali desktop"
+  },
+  {
+    "style": "Heading 3",
+    "text": "The Terminal"
+  },
+  {
+    "style": "Body Text",
+    "text": "The first step in using Kali is to open the terminal, which is the command line interface we’ll use in this book. In Kali Linux, you’ll find the icon for the terminal along the left of the desktop. Click this icon to open the terminal. Your new terminal should look like the one shown in Figure 1-3."
+  },
+  {
+    "style": "Normal",
+    "text": "Figure 1-3: The Kali terminal"
+  },
+  {
+    "style": "Body Text",
+    "text": "This terminal opens the command line environment, known as the shell, which enables you to run commands on the underlying operating systems and write scripts. Although Linux has many different shell environments, the most popular is the bash shell, which is also the default shell in Kali and many other Linux distributions."
+  },
+  {
+    "style": "Body Text",
+    "text": "To change your password, you can use the command passwd."
+  },
+  {
+    "style": "Heading 3",
+    "text": "The Linux Filesystem"
+  },
+  {
+    "style": "Body Text",
+    "text": "The Linux filesystem structure is somewhat different from that of Windows. Linux doesn’t have a physical drive (such as the C: drive) at the base of the filesystem but uses a logical filesystem instead. At the very top of the file- system structure is /, which is often referred to as the root of the filesystem, as if it were an upside-down tree (see Figure 1-4). Keep in mind that this is different from the root user. These terms may seem confusing at first, but they will become easier to differentiate once you get used to Linux."
+  },
+  {
+    "style": "Normal",
+    "text": "/"
+  },
+  {
+    "style": "Normal",
+    "text": "Figure 1-4: The Linux filesystem"
+  },
+  {
+    "style": "Body Text",
+    "text": "The root (/) of the filesystem is at the top of the tree, and the following are the most important subdirectories to know:"
+  },
+  {
+    "style": "Body Text",
+    "text": "/root  The home directory of the all-powerful root user"
+  },
+  {
+    "style": "Body Text",
+    "text": "/etc Generally contains the Linux configuration files—files that con- trol when and how programs start up"
+  },
+  {
+    "style": "Normal",
+    "text": "/home  The user’s home directory"
+  },
+  {
+    "style": "Body Text",
+    "text": "/mnt Where other filesystems are attached or mounted to the filesystem"
+  },
+  {
+    "style": "Body Text",
+    "text": "/media  Where CDs and USB devices are usually attached or mounted to the filesystem"
+  },
+  {
+    "style": "Body Text",
+    "text": "/bin Where application binaries (the equivalent of executables in Microsoft Windows or applications in macOS) reside"
+  },
+  {
+    "style": "Body Text",
+    "text": "/lib\tWhere you’ll find libraries (shared programs that are similar to Windows DLLs)"
+  },
+  {
+    "style": "Body Text",
+    "text": "We’ll spend more time with these key directories throughout this book. Understanding these first-level directories is important to navigating through the filesystem from the command line."
+  },
+  {
+    "style": "Body Text",
+    "text": "It’s also important to know before you start that you should not log in as root when performing routine tasks, because anyone who hacks your system (yes, hackers sometimes get hacked) when you’re logged in as root would immediately gain root privileges and thus “own” your system. Log in as a regular user when starting regular applications, browsing the web, run- ning tools like Wireshark, and so on. For the practice you’ll do in this book, staying logged in as root should be fine."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Basic Commands in Linux"
+  },
+  {
+    "style": "Body Text",
+    "text": "To begin, let’s look at some basic commands that will help you get up and running in Linux."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Finding Yourself with pwd"
+  },
+  {
+    "style": "Body Text",
+    "text": "Unlike when you’re working in a graphical user interface (GUI) environ- ment like Windows or macOS, the command line in Linux does not always make it apparent which directory you’re presently in. To navigate to a new directory, you usually need to know where you are currently. The present working directory (or print working directory) command, pwd, returns your location within the directory structure."
+  },
+  {
+    "style": "Body Text",
+    "text": "Enter pwd in your terminal to see where you are:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >pwd"
+  },
+  {
+    "style": "Normal",
+    "text": "/root"
+  },
+  {
+    "style": "Body Text",
+    "text": "In this case, Linux returned /root, telling me I’m in the root user’s directory. And because you logged in as root when you started Linux, you should be in the root user’s directory, too, which is one level below the top of the filesystem structure (/)."
+  },
+  {
+    "style": "Body Text",
+    "text": "If you’re in another directory, pwd will return that directory name instead."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Checking Your Login with whoami"
+  },
+  {
+    "style": "Body Text",
+    "text": "In Linux, the one “all-powerful” superuser or system administrator is named root, and it has all the system privileges needed to add users, change pass- words, change privileges, and so on. Obviously, you don’t want just anyone to have the ability to make such changes; you want someone who can be trusted and has proper knowledge of the operating system. As a hacker, you usually need to have all those privileges to run the programs and com- mands you need (many hacker tools won’t work unless you have root privi- leges), so you’ll want to log in as root."
+  },
+  {
+    "style": "Body Text",
+    "text": "If you’ve forgotten whether you’re logged in as root or another user, you can use the whoami command to see which user you’re logged in as:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >whoami root"
+  },
+  {
+    "style": "Body Text",
+    "text": "If I had been logged in as another user, such as my personal account,"
+  },
+  {
+    "style": "Body Text",
+    "text": "whoami would have returned my username instead, as shown here:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >whoami OTW"
+  },
+  {
+    "style": "Heading 3",
+    "text": "Navigating the Linux Filesystem"
+  },
+  {
+    "style": "Body Text",
+    "text": "Navigating the filesystem from the terminal is an essential Linux skill. To get anything done, you need to be able to move around to find applications, files, and directories located in other directories. In a GUI-based system, you can visually see the directories, but when you’re using the command"
+  },
+  {
+    "style": "Body Text",
+    "text": "line interface, the structure is entirely text based, and navigating the file- system means using some commands."
+  },
+  {
+    "style": "Heading 6",
+    "text": "Changing Directories with cd"
+  },
+  {
+    "style": "Body Text",
+    "text": "To change directories from the terminal, use the change directory command, cd. For example, here’s how to change to the /etc directory used to store con- figuration files:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cd /etc"
+  },
+  {
+    "style": "Normal",
+    "text": "kali:/etc >"
+  },
+  {
+    "style": "Normal",
+    "text": "The prompt changes to root@kali:/etc, indicating that we’re in the /etc"
+  },
+  {
+    "style": "Body Text",
+    "text": "directory. We can confirm this by entering pwd:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali:/etc  >pwd"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc"
+  },
+  {
+    "style": "Body Text",
+    "text": "To move up one level in the file structure (toward the root of the file structure, or /), we use cd followed by double dots (..), as shown here:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali:/etc >cd .."
+  },
+  {
+    "style": "Normal",
+    "text": "kali >pwd"
+  },
+  {
+    "style": "Normal",
+    "text": "/"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >"
+  },
+  {
+    "style": "Body Text",
+    "text": "This moves us up one level from /etc to the / root directory, but you can move up as many levels as you need. Just use the same number of double- dot pairs as the number of levels you want to move:"
+  },
+  {
+    "style": "List Paragraph",
+    "text": "You would use .. to move up one level."
+  },
+  {
+    "style": "List Paragraph",
+    "text": "You would use ../.. to move up two levels."
+  },
+  {
+    "style": "List Paragraph",
+    "text": "You would use ../../.. to move up three levels, and so on."
+  },
+  {
+    "style": "Body Text",
+    "text": "So, for example, to move up two levels, enter cd followed by two sets of double dots with a forward slash in between:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cd ../.."
+  },
+  {
+    "style": "Body Text",
+    "text": "You can also move up to the root level in the file structure from any- where by entering cd /, where / represents the root of the filesystem."
+  },
+  {
+    "style": "Heading 6",
+    "text": "Listing the Contents of a Directory with ls"
+  },
+  {
+    "style": "Body Text",
+    "text": "To see the contents of a directory (the files and subdirectories), we can use the ls (list) command. This is very similar to the dir command in Windows."
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ls"
+  },
+  {
+    "style": "Normal",
+    "text": "bin\tinitrd.img\tmedia\trun\tvar"
+  },
+  {
+    "style": "Body Text",
+    "text": "This command lists both the files and directories contained in the directory. You can also use this command on any particular directory, not just the one you are currently in, by listing the directory name after the command; for example, ls /etc shows what’s in the /etc directory."
+  },
+  {
+    "style": "Body Text",
+    "text": "To get more information about the files and directories, such as their permissions, owner, size, and when they were last modified, you can add the -l switch after ls (the l stands for long). This is often referred to as long listing. Let’s try it here:"
+  },
+  {
+    "style": "Body Text",
+    "text": "As you can see, ls -l provides us with significantly more information, such as whether an object is a file or directory, the number of links, the owner, the group, its size, when it was created or modified, and its name."
+  },
+  {
+    "style": "Body Text",
+    "text": "I typically add the -l switch whenever doing a listing in Linux, but to each their own. We’ll talk more about ls -l in Chapter 5."
+  },
+  {
+    "style": "Body Text",
+    "text": "Some files in Linux are hidden and won’t be revealed by a simple ls or"
+  },
+  {
+    "style": "Body Text",
+    "text": "ls -l command. To show hidden files, add a lowercase –a switch, like so:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ls -la"
+  },
+  {
+    "style": "Body Text",
+    "text": "If you aren’t seeing a file you expect to see, it’s worth trying ls with the a flag When using multiple flags, you can combine them into one, as we’ve done here with -la instead of -l -a."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Getting Help"
+  },
+  {
+    "style": "Body Text",
+    "text": "Nearly every command, application, or utility has a dedicated help file in Linux that provides guidance for its use. For instance, if I needed help using the best wireless cracking tool, aircrack-ng, I could simply type the aircrack-ng command followed by the --help command:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >aircrack-ng --help"
+  },
+  {
+    "style": "Body Text",
+    "text": "Note the double dash here. The convention in Linux is to use a double dash (--) before word options, such as help, and a single dash (-) before single-letter options, such as –h."
+  },
+  {
+    "style": "Body Text",
+    "text": "When you enter this command, you should see a short description of the tool and guidance on how to use it. In some cases, you can use either -h or -? to get to the help file. For instance, if I needed help using the hacker’s best port-scanning tool, nmap, I would enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >nmap -h"
+  },
+  {
+    "style": "Body Text",
+    "text": "Unfortunately, although many applications support all three options (--help, -h, and -?), there’s no guarantee the application you’re using will. So if one option doesn’t work, try another."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Referencing Manual Pages with man"
+  },
+  {
+    "style": "Body Text",
+    "text": "In addition to the help switch, most commands and applications have a manual (man) page with more information, such as a description and syn- opsis of the command or application. You can view a man page by simply"
+  },
+  {
+    "style": "Body Text",
+    "text": "typing man before the command, utility, or application. To see the man page for aircrack-ng, for example, you would enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >man aircrack-ng"
+  },
+  {
+    "style": "Normal",
+    "text": "NAME"
+  },
+  {
+    "style": "Normal",
+    "text": "aircrack-ng - a 802.11 WEP / WPA-PSK key cracker"
+  },
+  {
+    "style": "Normal",
+    "text": "SYNOPSIS"
+  },
+  {
+    "style": "Normal",
+    "text": "aircrack-ng [options] <.cap / .ivs file(s)> DESCRIPTION"
+  },
+  {
+    "style": "Normal",
+    "text": "aircrack-ng is an 802.11 WEP and WPA/WPA2-PSK key cracking program. It can recover the WEP key once enough encrypted packets have been captured with airodump-ng. This part of the aircrack-ng suite deter- mines the WEP key using two fundamental methods. The first method is via the PTW approach (Pyshkin, Tews, Weinmann). The main advantage of the PTW approach is that very few data packets are required to crack the WEP key. The second method is the FMS/KoreK method. The FMS/KoreK method incorporates various statistical attacks to dis- cover the WEP key and uses these in combination with brute forcing. Additionally, the program offers a dictionary method for determining the WEP key. For cracking WPA/WPA2 pre-shared keys, a wordlist (file or stdin) or an airolib-ng has to be used."
+  },
+  {
+    "style": "Body Text",
+    "text": "This opens the manual for aircrack-ng, providing you with more detailed information than the help screen. You can scroll through this manual file using the ENTER key, or you can page up and down using the PG DN and PG UP keys, respectively; you can also use the arrow keys. To exit, simply enter q (for quit), and you’ll return to the command prompt."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Finding Stuff"
+  },
+  {
+    "style": "Body Text",
+    "text": "Until you become familiar with Linux, it can be frustrating to find your way around, but knowledge of a few basic commands and techniques will go a long way toward making the command line much friendlier. The following commands help you locate things from the terminal."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Searching with locate"
+  },
+  {
+    "style": "Body Text",
+    "text": "Probably the easiest command to use is locate. Followed by a keyword denot- ing what it is you want to find, this command will go through your entire filesystem and locate every occurrence of that word."
+  },
+  {
+    "style": "Body Text",
+    "text": "To look for aircrack-ng, for example, enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >locate aircrack-ng"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/bin/aircrack-ng"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/share/applications/kali-aircrack-ng.desktop"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/share/desktop-directories/05-1-01-aircrack-ng.directory"
+  },
+  {
+    "style": "Normal",
+    "text": "--snip--"
+  },
+  {
+    "style": "Normal",
+    "text": "/var/lib/dpkg/info/aircrack-ng.md5sums"
+  },
+  {
+    "style": "Body Text",
+    "text": "The locate command is not perfect, however. Sometimes the results of locate can be overwhelming, giving you too much information. Also, locate uses a database that is usually only updated once a day, so if you just created a file a few minutes or a few hours ago, it might not appear in this list until the next day. It’s worth knowing the disadvantages of these basic commands so you can better decide when best to use each one."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Finding Binaries with whereis"
+  },
+  {
+    "style": "Body Text",
+    "text": "If you’re looking for a binary file, you can use the whereis command to locate it. This command returns not only the location of the binary but also its source and man page if they are available. Here’s an example:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >whereis aircrack-ng"
+  },
+  {
+    "style": "Normal",
+    "text": "aircarck-ng: /usr/bin/aircarck-ng /usr/share/man/man1/aircarck-ng.1.gz"
+  },
+  {
+    "style": "Body Text",
+    "text": "In this case, whereis returned just the aircrack-ng binaries and man page, rather than every occurrence of the word aircrack-ng. Much more efficient and illuminating, don’t you think?"
+  },
+  {
+    "style": "Heading 3",
+    "text": "Finding Binaries in the PATH Variable with which"
+  },
+  {
+    "style": "Body Text",
+    "text": "The which command is even more specific: it only returns the location of the binaries in the PATH variable in Linux. We’ll look more closely at the PATH variable in Chapter 7, but for now it’s sufficient to know that PATH holds the directories in which the operating system looks for the commands you execute at the command line. For example, when I enter aircrack-ng on the command line, the operating system looks to the PATH variable to see in which directories it should look for aircrack-ng:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >which aircrack-ng"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/bin/aircrack-ng"
+  },
+  {
+    "style": "Body Text",
+    "text": "Here, which was able to find a single binary file in the directories listed in the PATH variable. At minimum, these directories usually include /usr/bin, but may include /usr/sbin and maybe a few others."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Performing More Powerful Searches with find"
+  },
+  {
+    "style": "Body Text",
+    "text": "The find command is the most powerful and flexible of the searching utili- ties. It is capable of beginning your search in any designated directory and looking for a number of different parameters, including, of course, the file- name but also the date of creation or modification, the owner, the group, permissions, and the size."
+  },
+  {
+    "style": "Body Text",
+    "text": "Here’s the basic syntax for find:"
+  },
+  {
+    "style": "Normal",
+    "text": "find directory options expression"
+  },
+  {
+    "style": "Body Text",
+    "text": "So, if I wanted to search for a file with the name apache2 (an open source web server) starting in the root directory, I would enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >find /❶ -type f❷ -name apache2❸"
+  },
+  {
+    "style": "Body Text",
+    "text": "First I state the directory in which to start the search, in this case / ❶."
+  },
+  {
+    "style": "Body Text",
+    "text": "Then I specify which type of file to search for, in this case f for an ordi- nary file ❷. Last, I give the name of the file I’m searching for, in this case apache2 ❸."
+  },
+  {
+    "style": "Body Text",
+    "text": "My results for this search are shown here:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >find / -type f -name apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/lib/apache2/mpm-itk/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/lib/apache2/mpm-event/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/lib/apache2/mpm-worker/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/usr/lib/apache2/mpm-prefork/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/cron.daily/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/logrotate.d/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/init.d/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/default/apache2"
+  },
+  {
+    "style": "Body Text",
+    "text": "The find command started at the top of the filesystem (/), went through every directory looking for apache2 in the filename, and then listed all instances found."
+  },
+  {
+    "style": "Body Text",
+    "text": "As you might imagine, a search that looks in every directory can be slow. One way to speed it up is to look only in the directory where you would expect to find the file(s) you need. In this case, we are looking for a con- figuration file, so we could start the search in the /etc directory, and Linux would only search as far as its subdirectories. Let’s try it:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >find /etc -type f -name apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/init.d/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/logrotate.d/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/cron.daily/apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/default/apache2"
+  },
+  {
+    "style": "Body Text",
+    "text": "This much quicker search only found occurrences of apache2 in the"
+  },
+  {
+    "style": "Body Text",
+    "text": "/etc directory and its subdirectories. It’s also important to note that unlike some other search commands, find displays only exact name matches. If the"
+  },
+  {
+    "style": "Body Text",
+    "text": "file apache2 has an extension, such as apache2.conf, the search will not find a match. We can remedy this limitation by using wildcards, which enable us to match multiple characters. Wildcards come in a few different forms: * . , ? and []."
+  },
+  {
+    "style": "Body Text",
+    "text": "Let’s look in the /etc directory for all files that begin with apache2 and have any extension. For this, we could write a find command using the fol- lowing wildcard:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >find /etc -type f -name apache2.\\*"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc/apache2/apache2.conf"
+  },
+  {
+    "style": "Body Text",
+    "text": "When we run this command, we find that there is one file in the /etc directory that fits the apache2.* pattern. When we use a period followed by the * wildcard, the terminal looks for any extension after the filename apache2. This can be a very useful technique for finding files where you don’t know the file extension."
+  },
+  {
+    "style": "Body Text",
+    "text": "When I run this command, I find two files that start with apache2 in the"
+  },
+  {
+    "style": "Normal",
+    "text": "/etc directory, including the apache2.conf file."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Filtering with grep"
+  },
+  {
+    "style": "Body Text",
+    "text": "Very often when using the command line, you’ll want to search for a par- ticular keyword. For this, you can use the grep command as a filter to search for keywords."
+  },
+  {
+    "style": "Body Text",
+    "text": "The grep command is often used when output is piped from one com- mand to another. I cover piping in Chapter 2, but for now, suffice it to say that Linux (and Windows for that matter) allows us to take the output of one command and send it as input to another command. This is called piping, and we use the | command to do it (the | key is usually above the ENTER key on your keyboard)."
+  },
+  {
+    "style": "Body Text",
+    "text": "The ps command is used to display information about processes run- ning on the machine. We cover this in more detail in Chapter 6, but for this"
+  },
+  {
+    "style": "Body Text",
+    "text": "example, suppose I want to see all the processes running on my Linux sys- tem. In this case, I can use the ps (processes) command followed by the aux switches to specify which process information to display, like so:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ps aux"
+  },
+  {
+    "style": "Body Text",
+    "text": "This provides me with a listing of all the processes running in this system—but what if I just want to find one process to see if it is running?"
+  },
+  {
+    "style": "Body Text",
+    "text": "I can do this by piping the output from ps to grep and searching for a keyword. For instance, to find out whether the apache2 service is running, I would enter the following."
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ps aux | grep apache2"
+  },
+  {
+    "style": "Normal",
+    "text": "--snip--"
+  },
+  {
+    "style": "Body Text",
+    "text": "This command tells Linux to display all my services and then send that output to grep, which will look through the output for the keyword apache2 and then display only the relevant output, thus saving me consid- erable time and my eyesight."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Modifying Files and Directories"
+  },
+  {
+    "style": "Body Text",
+    "text": "Once you’ve found your files and directories, you’ll want to be able to per- form actions on them. In this section, we look at how to create files and directories, copy files, rename files, and delete files and directories."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Creating Files"
+  },
+  {
+    "style": "Body Text",
+    "text": "There are many ways to create files in Linux, but for now we’ll just look at two simple methods. The first is cat, which is short for concatenate, meaning to combine pieces together (not a reference to your favorite domesticated feline). The cat command is generally used for displaying the contents of a file, but it can also be used to create small files. For creating bigger files, it’s better to enter the code in a text editor such as vim, emacs, leafpad, gedit, or kate and then save it as a file."
+  },
+  {
+    "style": "Heading 6",
+    "text": "Concatenation with cat"
+  },
+  {
+    "style": "Body Text",
+    "text": "The cat command followed by a filename will display the contents of that file, but to create a file, we follow the cat command with a redirect, denoted with the > symbol, and a name for the file we want to create. Here’s an example:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cat > hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Hacking is the most valuable skill set of the 21st century!"
+  },
+  {
+    "style": "Normal",
+    "text": "When you press ENTER, Linux will go into interactive mode and wait for you to start entering content for the file. This can be puzzling because the prompt disappears, but if you simply begin typing, whatever you enter will go into the file (in this case, hackingskills). Here, I entered Hacking is the most valuable skill set of the 21st century!. To exit and return to the prompt, I press CTRL-D. Then, when I want to see what’s in the file hackingskills, I enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cat hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Hacking is the most valuable skill set of the 21st century!"
+  },
+  {
+    "style": "Body Text",
+    "text": "If you don’t use the redirect symbol, Linux will spit back the contents of your file."
+  },
+  {
+    "style": "Body Text",
+    "text": "To add, or append, more content to a file, you can use the cat command with a double redirect (>>), followed by whatever you want to add to the end of the file. Here’s an example:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cat >> hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Everyone should learn hacking"
+  },
+  {
+    "style": "Normal",
+    "text": "Linux once again goes into interactive mode, waiting for content to append to the file. When I enter Everyone should learn hacking and press CTRL-D, I am returned to the prompt. Now, when I display the contents of that file with cat, I can see that the file has been appended with Everyone should learn hacking, as shown here:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cat hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Hacking is the most valuable skill set of the 21st century! Everyone should learn hacking"
+  },
+  {
+    "style": "Body Text",
+    "text": "If I want to overwrite the file with new information, I can simply use the"
+  },
+  {
+    "style": "Body Text",
+    "text": "cat command with a single redirect again, as follows:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cat > hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Everyone in IT security without hacking skills is in the dark kali >cat hackingskills"
+  },
+  {
+    "style": "Normal",
+    "text": "Everyone in IT security without hacking skills is in the dark"
+  },
+  {
+    "style": "Body Text",
+    "text": "As you can see here, Linux goes into interactive mode, and I enter the new text and then exit back to the prompt. When I once again use cat to see the content of the file, I see that my previous words have been overwritten with the latest text."
+  },
+  {
+    "style": "Heading 6",
+    "text": "File Creation with touch"
+  },
+  {
+    "style": "Body Text",
+    "text": "The second command for file creation is touch. This command was origi- nally developed so a user could simply touch a file to change some of its details, such as the date it was created or modified. However, if the file doesn’t already exist, this command creates that file by default."
+  },
+  {
+    "style": "Normal",
+    "text": "Let’s create newfile with touch:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >touch newfile"
+  },
+  {
+    "style": "Body Text",
+    "text": "Now when I then use ls –l to see the long list of the directory, I see that a new file has been created named newfile. Note that its size is 0 because there is no content in newfile."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Creating a Directory"
+  },
+  {
+    "style": "Body Text",
+    "text": "The command for creating a directory in Linux is mkdir, a contraction of make directory. To create a directory named newdirectory, enter the following command:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >mkdir newdirectory"
+  },
+  {
+    "style": "Body Text",
+    "text": "To navigate to this newly created directory, simply enter this:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cd newdirectory"
+  },
+  {
+    "style": "Heading 3",
+    "text": "Copying a File"
+  },
+  {
+    "style": "Body Text",
+    "text": "To copy files, we use the cp command. This creates a duplicate of the file in the new location and leaves the old one in place."
+  },
+  {
+    "style": "Normal",
+    "text": "Here, we’ll create the file oldfile in the root directory with touch and copy it to /root/newdirectory, renaming it in the process and leaving the ori- ginal oldfile in place:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >touch oldfile"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cp oldfile /root/newdirectory/newfile"
+  },
+  {
+    "style": "Body Text",
+    "text": "Renaming the file is optional and is done simply by adding the name you want to give it to the end of the directory path. If you don’t rename the file when you copy it, the file will retain the original name by default."
+  },
+  {
+    "style": "Normal",
+    "text": "When we then navigate to newdirectory, we see that there is an exact copy of oldfile called newfile:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >cd newdirectory"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ls"
+  },
+  {
+    "style": "Normal",
+    "text": "newfile\toldfile"
+  },
+  {
+    "style": "Heading 3",
+    "text": "Renaming a File"
+  },
+  {
+    "style": "Body Text",
+    "text": "Unfortunately, Linux doesn’t have a command intended solely for renaming a file, as Windows and some other operating systems do, but it does have the mv (move) command."
+  },
+  {
+    "style": "Body Text",
+    "text": "The mv command can be used to move a file or directory to a new loca- tion or simply to give an existing file a new name. To rename newfile to newfile2, you would enter the following:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >mv newfile newfile2"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >ls"
+  },
+  {
+    "style": "Normal",
+    "text": "oldfile newfile2"
+  },
+  {
+    "style": "Body Text",
+    "text": "Now when you list (ls) that directory, you see newfile2 but not newfile, because it has been renamed. You can do the same with directories."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Removing a File"
+  },
+  {
+    "style": "Body Text",
+    "text": "To remove a file, you can simply use the rm command, like so:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >rm newfile2"
+  },
+  {
+    "style": "Body Text",
+    "text": "If you now do a long listing on the directory, you can confirm that the file has been removed."
+  },
+  {
+    "style": "Heading 3",
+    "text": "Removing a Directory"
+  },
+  {
+    "style": "Body Text",
+    "text": "The command for removing a directory is similar to the rm command for removing files but with dir (for directory) appended, like so:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >rmdir newdirectory"
+  },
+  {
+    "style": "Normal",
+    "text": "rmdir:failed to remove 'newdirectory': Directory not empty"
+  },
+  {
+    "style": "Body Text",
+    "text": "It’s important to note that rmdir will not remove a directory that is not empty, but will give you a warning message that the “directory is not empty,” as you can see in this example. You must first remove all the contents of the directory before removing it. This is to stop you from accidentally deleting objects you didn’t intend to delete."
+  },
+  {
+    "style": "Body Text",
+    "text": "If you do want to remove a directory and its content all in one go, you can use the -r switch after rm, like so:"
+  },
+  {
+    "style": "Normal",
+    "text": "kali >rm -r newdirectory"
+  },
+  {
+    "style": "Body Text",
+    "text": "Just a word of caution, though: be wary of using the -r option with rm, at least at first, because it’s very easy to remove valuable files and directories by mistake. Using rm -r in your home directory, for instance, would delete every file and directory there—probably not what you were intending."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Go Play Now!"
+  },
+  {
+    "style": "Body Text",
+    "text": "Now that you have some basic skills for navigating around the filesystem, you can play with your Linux system a bit before progressing. The best way to become comfortable with using the terminal is to try out your newfound skills right now. In subsequent chapters, we will explore farther and deeper into our hacker playground."
+  },
+  {
+    "style": "Heading 1",
+    "text": "2"
+  },
+  {
+    "style": "Heading 2",
+    "text": "T E X T M A NI PU L A T I ON"
+  },
+  {
+    "style": "Normal",
+    "text": "In Linux, nearly everything you deal with directly is a file, and most often these will be text files; for instance, all configuration"
+  },
+  {
+    "style": "Normal",
+    "text": "files in Linux are text files. So to reconfigure an application, you simply open the configuration file, change the text, save the file, and then restart the application—your reconfiguration is complete."
+  },
+  {
+    "style": "Body Text",
+    "text": "With so many text files, manipulating text becomes crucial in manag- ing Linux and Linux applications. In this chapter, you’ll use several com- mands and techniques for manipulating text in Linux."
+  },
+  {
+    "style": "Body Text",
+    "text": "For illustrative purposes, I’ll use files from the world’s best network intrusion detection system (NIDS), Snort, which was first developed by Marty Roesch and is now owned by Cisco. NIDSs are commonly used to detect intrusions by hackers, so if you want to be a successful hacker, you must be familiar with the ways NIDSs can deter attacks and the ways you can abuse them to avoid detection."
+  },
+  {
+    "style": "Normal",
+    "text": "NO T E \tIf the version of Kali Linux you’re using doesn’t come preinstalled with Snort, you can download the files from the Kali repository by entering apt-get install snort."
+  },
+  {
+    "style": "Heading 4",
+    "text": "Viewing Files"
+  },
+  {
+    "style": "Body Text",
+    "text": "As demonstrated in Chapter 1, the most basic text display command is probably cat, but it has its limitations. Use cat to display the Snort config file (snort.conf ) found in/etc/snort (see Listing 2-1)."
+  }
+]

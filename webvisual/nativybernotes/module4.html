@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 4: Software Installation Methods — NatIvyberNotes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body{background:#030712;font-family:'Inter',sans-serif;}
+    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid rgba(234,179,8,0.12);}
+    .glass-card{background:linear-gradient(135deg,rgba(13,21,38,0.95),rgba(10,15,30,0.98));border:1px solid rgba(234,179,8,0.15);}
+    .terminal-block{background:#0f0e00;border:1px solid #eab308;border-radius:10px;font-family:'JetBrains Mono',monospace;overflow:hidden;}
+    .terminal-bar{background:#1a1800;border-bottom:1px solid #eab30833;padding:8px 14px;}
+    .cmd{color:#fde047;}.flag{color:#86efac;}.comment{color:#4b5563;}
+    .hl{background:rgba(234,179,8,0.06);border-left:3px solid #eab308;border-radius:0 8px 8px 0;}
+    .tip{background:rgba(59,130,246,0.06);border-left:3px solid #3b82f6;border-radius:0 8px 8px 0;}
+    .quiz-opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;cursor:pointer;}
+    .quiz-opt:hover{border-color:rgba(234,179,8,0.4);background:rgba(234,179,8,0.08);}
+    .quiz-opt.correct{border-color:#22c55e;background:rgba(34,197,94,0.12);}
+    .quiz-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,0.12);}
+    .quiz-opt.selected{border-color:#eab308;background:rgba(234,179,8,0.12);}
+    code.il{background:rgba(234,179,8,0.12);color:#fde047;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.875em;}
+    .sa{scroll-margin-top:80px;}
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-yellow-500/10">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center"><span class="text-black font-black text-xs">N</span></div><span class="font-bold text-sm"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span></a>
+      <div class="flex items-center gap-3"><a href="module3.html" class="text-gray-500 text-sm hidden sm:block">← Scripts</a><a href="module5.html" class="px-3 py-1.5 rounded-lg glass border border-yellow-500/20 text-yellow-400 text-xs">Next: Shell →</a></div>
+    </div>
+  </nav>
+
+  <div class="min-h-screen pt-16" style="background-image:linear-gradient(rgba(234,179,8,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(234,179,8,0.04) 1px,transparent 1px);background-size:40px 40px;">
+    <div class="py-16 px-4 text-center border-b border-gray-800/50" style="background:linear-gradient(to bottom,rgba(113,63,0,0.1),transparent);">
+      <span class="inline-block px-3 py-1 rounded-full text-xs font-mono mb-6 border border-yellow-500/30 bg-yellow-500/10 text-yellow-300">MODULE 04 / 06</span>
+      <div class="text-5xl mb-4">⚙️</div>
+      <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Software Installation <span class="text-yellow-400">Methods</span></h1>
+      <p class="text-gray-400 text-lg max-w-xl mx-auto">Compare all Linux software installation methods — from package managers to compiling from source, Snap, and Flatpak.</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-12 space-y-10">
+
+      <!-- Overview Table -->
+      <div id="overview" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm">01</span><h2 class="text-2xl font-bold text-white">All Methods at a Glance</h2></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="border-b border-gray-700"><th class="text-left py-3 px-3 text-yellow-400">Method</th><th class="text-left py-3 px-3 text-yellow-400">Command Example</th><th class="text-left py-3 px-3 text-yellow-400">Distro</th><th class="text-left py-3 px-3 text-yellow-400">Notes</th></tr></thead>
+            <tbody class="divide-y divide-gray-800 text-xs">
+              <tr><td class="py-3 px-3 text-white font-semibold">Package Manager</td><td class="py-3 px-3 font-mono text-yellow-200">apt install vim</td><td class="py-3 px-3 text-gray-400">Debian-based</td><td class="py-3 px-3 text-gray-400">Easiest — handles deps auto</td></tr>
+              <tr class="bg-gray-900/30"><td class="py-3 px-3 text-white font-semibold">Pacman/yay</td><td class="py-3 px-3 font-mono text-yellow-200">pacman -S vim</td><td class="py-3 px-3 text-gray-400">Arch-based</td><td class="py-3 px-3 text-gray-400">Official + AUR repos</td></tr>
+              <tr><td class="py-3 px-3 text-white font-semibold">Compile Source</td><td class="py-3 px-3 font-mono text-yellow-200">./configure &amp;&amp; make</td><td class="py-3 px-3 text-gray-400">Any</td><td class="py-3 px-3 text-gray-400">Max control, needs build tools</td></tr>
+              <tr class="bg-gray-900/30"><td class="py-3 px-3 text-white font-semibold">.deb file</td><td class="py-3 px-3 font-mono text-yellow-200">sudo dpkg -i file.deb</td><td class="py-3 px-3 text-gray-400">Debian-based</td><td class="py-3 px-3 text-gray-400">Pre-built, no dep resolution</td></tr>
+              <tr><td class="py-3 px-3 text-white font-semibold">.tar.gz</td><td class="py-3 px-3 font-mono text-yellow-200">tar -xzf app.tar.gz</td><td class="py-3 px-3 text-gray-400">Any</td><td class="py-3 px-3 text-gray-400">Extract then build</td></tr>
+              <tr class="bg-gray-900/30"><td class="py-3 px-3 text-white font-semibold">Snap</td><td class="py-3 px-3 font-mono text-yellow-200">sudo snap install vlc</td><td class="py-3 px-3 text-gray-400">Ubuntu+</td><td class="py-3 px-3 text-gray-400">Containerized, cross-distro</td></tr>
+              <tr><td class="py-3 px-3 text-white font-semibold">Flatpak</td><td class="py-3 px-3 font-mono text-yellow-200">flatpak install flathub org.app</td><td class="py-3 px-3 text-gray-400">Any</td><td class="py-3 px-3 text-gray-400">Universal, sandboxed</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Compile from Source -->
+      <div id="source" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm">02</span><h2 class="text-2xl font-bold text-white">Compile from Source</h2></div>
+        <p class="text-gray-400 mb-4">Download source code and build the program yourself. Gives you <strong class="text-white">maximum control</strong> — enable/disable features, optimize for your CPU. Requires build tools: <code class="il">gcc</code>, <code class="il">make</code>.</p>
+        <div class="terminal-block mb-4">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="comment"># Install build tools first</span></p>
+            <p><span class="flag">sudo</span> <span class="cmd">apt install</span> build-essential</p>
+            <p class="mt-2"><span class="comment"># Configure, compile, install</span></p>
+            <p><span class="cmd">./configure</span> <span class="flag">&amp;&amp;</span> <span class="cmd">make</span> <span class="flag">&amp;&amp;</span> <span class="flag">sudo</span> <span class="cmd">make install</span></p>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">./configure</code><p class="text-gray-400 text-sm">Checks your system for required libraries and generates a Makefile customized for your hardware.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">make</code><p class="text-gray-400 text-sm"><strong class="text-white">Compiles the source code</strong> into binary executables. Can take minutes on large projects.</p></div>
+          <div class="hl p-3 flex items-start gap-3"><code class="il shrink-0">sudo make install</code><p class="text-gray-400 text-sm"><strong class="text-white">Copies compiled binaries</strong> to system directories (<code class="il">/usr/local/bin</code>) so they're accessible system-wide.</p></div>
+        </div>
+      </div>
+
+      <!-- dpkg / .deb -->
+      <div id="deb" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm">03</span><h2 class="text-2xl font-bold text-white">.deb Files — dpkg</h2></div>
+        <p class="text-gray-400 mb-4"><code class="il">dpkg</code> stands for <strong class="text-white">Debian Package</strong> — the low-level package manager that apt uses behind the scenes. <code class="il">.deb</code> files are pre-built packages ready to install.</p>
+        <div class="terminal-block mb-4">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="flag">sudo</span> <span class="cmd">dpkg -i</span> package.deb    <span class="comment"># Install</span></p>
+            <p><span class="flag">sudo</span> <span class="cmd">apt install -f</span>           <span class="comment"># Fix missing deps after dpkg</span></p>
+            <p><span class="flag">sudo</span> <span class="cmd">dpkg -r</span> package-name    <span class="comment"># Remove</span></p>
+          </div>
+        </div>
+        <div class="hl p-3"><p class="text-gray-400 text-sm"><code class="il">-i</code> = install. Unlike apt, dpkg does <strong class="text-white">NOT auto-resolve dependencies</strong>. If a dep is missing, run <code class="il">sudo apt install -f</code> to fix broken deps.</p></div>
+      </div>
+
+      <!-- tar.gz -->
+      <div id="tar" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm">04</span><h2 class="text-2xl font-bold text-white">.tar.gz Archives</h2></div>
+        <p class="text-gray-400 mb-4">A <code class="il">.tar.gz</code> is a <strong class="text-white">compressed archive</strong>. <code class="il">tar</code> bundles files together, <code class="il">.gz</code> compresses them with gzip — like .zip on Windows.</p>
+        <div class="terminal-block mb-4">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="cmd">tar</span> <span class="flag">-xzf</span> archive.tar.gz          <span class="comment"># Extract</span></p>
+            <p><span class="cmd">tar</span> <span class="flag">-xzf</span> archive.tar.gz <span class="flag">-C</span> /opt/ <span class="comment"># Extract to specific dir</span></p>
+            <p><span class="cmd">tar</span> <span class="flag">-czf</span> myarchive.tar.gz folder/ <span class="comment"># Create archive</span></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-3 text-center text-xs">
+          <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-3"><div class="text-yellow-400 font-mono font-bold mb-1">-x</div><div class="text-gray-500">eXtract</div></div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-3"><div class="text-yellow-400 font-mono font-bold mb-1">-c</div><div class="text-gray-500">Create</div></div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-3"><div class="text-yellow-400 font-mono font-bold mb-1">-z</div><div class="text-gray-500">gZip</div></div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-lg p-3"><div class="text-yellow-400 font-mono font-bold mb-1">-f</div><div class="text-gray-500">File name</div></div>
+        </div>
+      </div>
+
+      <!-- Snap & Flatpak -->
+      <div id="containers" class="sa glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm">05</span><h2 class="text-2xl font-bold text-white">Snap &amp; Flatpak — Containerized</h2></div>
+        <p class="text-gray-400 mb-4">Both bundle the app with its dependencies in an <strong class="text-white">isolated container</strong> — solving dependency hell. They work across different Linux distributions.</p>
+        <div class="terminal-block mb-4">
+          <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+          <div class="p-4 text-sm space-y-1">
+            <p><span class="comment"># SNAP</span></p>
+            <p><span class="flag">sudo</span> <span class="cmd">snap install</span> vlc  |  <span class="flag">sudo</span> <span class="cmd">snap remove</span> vlc</p>
+            <p class="mt-2"><span class="comment"># FLATPAK</span></p>
+            <p><span class="cmd">flatpak install</span> flathub org.videolan.VLC</p>
+            <p><span class="cmd">flatpak run</span> org.videolan.VLC</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-sm"><p class="text-white font-semibold mb-2">📦 Snap</p><ul class="text-gray-500 text-xs space-y-1"><li>• By Canonical (Ubuntu)</li><li>• Auto-updates in background</li><li>• Good Ubuntu integration</li></ul></div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-sm"><p class="text-white font-semibold mb-2">📦 Flatpak</p><ul class="text-gray-500 text-xs space-y-1"><li>• Strong sandboxing</li><li>• Flathub = largest app store</li><li>• Works on any distro</li></ul></div>
+        </div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz" class="sa glass-card rounded-2xl p-6 sm:p-8 border border-yellow-500/30">
+        <div class="flex items-center gap-3 mb-2"><span class="text-3xl">📝</span><h2 class="text-2xl font-bold text-white">Module 4 Quiz</h2><span class="ml-auto text-sm font-mono text-yellow-400 bg-yellow-400/10 px-3 py-1 rounded-full border border-yellow-400/20" id="score-display">0 / 8</span></div>
+        <p class="text-gray-500 text-sm mb-8">Test your knowledge of Linux software installation methods.</p>
+        <div id="quiz-container" class="space-y-8"></div>
+        <div class="mt-8 flex gap-3">
+          <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold hover:from-yellow-400 hover:to-orange-400 transition-all">Check Answers</button>
+          <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-yellow-500/50 hover:text-yellow-400 transition-all">Reset</button>
+        </div>
+        <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+        <a href="module3.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-yellow-500/50 hover:text-yellow-400 transition-all text-sm">← Script Installation</a>
+        <a href="module5.html" class="flex items-center gap-2 px-6 py-3 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:border-yellow-400/60 transition-all text-sm font-semibold">Next: The Shell →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions=[
+      {q:"What does 'dpkg' stand for?",opts:["Debian Package Kit","Debian Package","Default Package Key","Distributed Package Group"],correct:1},
+      {q:"What is the correct order for compiling from source?",opts:["make → configure → install","./configure → make → sudo make install","sudo make install → make → configure","make install → configure → make"],correct:1},
+      {q:"What does 'sudo apt install -f' do after a failed dpkg install?",opts:["Force reinstall .deb","Fix missing dependencies","Format package cache","Fetch updates"],correct:1},
+      {q:"What does the -x flag do in 'tar -xzf archive.tar.gz'?",opts:["Compress","Extract","Execute","Export XML"],correct:1},
+      {q:"What is a key advantage of Snap and Flatpak?",opts:["Smaller file size","Works across different Linux distros","Faster installation","No internet needed"],correct:1},
+      {q:"Which command installs a Snap package?",opts:["snap add vlc","snap get vlc","sudo snap install vlc","flatpak install vlc"],correct:2},
+      {q:"What does 'dependency hell' mean in Linux?",opts:["Too many users","Complex conflicts between required library versions","A virus attacking packages","Building taking too long"],correct:1},
+      {q:"What is Flathub?",opts:["A compression tool","The largest Flatpak app repository","A Snap competitor","A Docker hub for Linux"],correct:1}
+    ];
+    let answers=new Array(questions.length).fill(null),submitted=false;
+    function renderQuiz(){const c=document.getElementById('quiz-container');c.innerHTML='';questions.forEach((q,qi)=>{const d=document.createElement('div');d.className='border border-gray-800 rounded-xl p-5';d.innerHTML=`<p class="text-white font-semibold mb-4"><span class="text-yellow-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p><div class="space-y-2" id="opts-${qi}">${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" class="quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div><div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>`;c.appendChild(d);});}
+    function selectAnswer(qi,oi){if(submitted)return;answers[qi]=oi;document.querySelectorAll(`#opts-${qi} button`).forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'+(i===oi?' selected':'');});document.getElementById('score-display').textContent=`${answers.filter(a=>a!==null).length} / ${questions.length}`;}
+    function submitQuiz(){submitted=true;let score=0;questions.forEach((q,qi)=>{const opts=document.querySelectorAll(`#opts-${qi} button`);opts.forEach((b,i)=>{b.className='quiz-opt w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3';if(i===q.correct)b.classList.add('correct');else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong');});const fb=document.getElementById(`feedback-${qi}`);fb.classList.remove('hidden');if(answers[qi]===q.correct){score++;fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';fb.textContent='✓ Correct!';}else{fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';fb.textContent=`✗ Correct: ${q.opts[q.correct]}`;}}); const r=document.getElementById('quiz-result');r.classList.remove('hidden');const pct=Math.round((score/questions.length)*100);r.className=`mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-yellow-500/30 bg-yellow-500/10':'border-red-500/30 bg-red-500/10'}`;r.innerHTML=`<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-yellow-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Expert!':pct>=70?'Good work!':'Review and try again.'}</div>`;document.getElementById('score-display').textContent=`${score} / ${questions.length}`;}
+    function resetQuiz(){submitted=false;answers=new Array(questions.length).fill(null);document.getElementById('quiz-result').classList.add('hidden');document.getElementById('score-display').textContent='0 / 8';renderQuiz();}
+    renderQuiz();
+  </script>
+</body>
+</html>

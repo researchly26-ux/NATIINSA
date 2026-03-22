@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 1: Linux User Management — NatIvyberNotes</title>
+  <meta name="description" content="Learn Linux user management: users vs root, UID, useradd, userdel, passwd, su, sudo, and sudoers — with interactive quiz." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] },
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(20,184,166,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(20,184,166,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(20,184,166,0.15); }
+    .terminal-block { background: #05100a; border: 1px solid #14b8a6; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #0a1a10; border-bottom: 1px solid #14b8a633; padding: 8px 14px; }
+    .cmd { color: #2dd4bf; }
+    .flag { color: #fbbf24; }
+    .comment { color: #4b5563; }
+    .output { color: #9ca3af; }
+    .highlight-box { background: rgba(20,184,166,0.06); border-left: 3px solid #14b8a6; border-radius: 0 8px 8px 0; }
+    .warn-box { background: rgba(251,191,36,0.06); border-left: 3px solid #fbbf24; border-radius: 0 8px 8px 0; }
+    .tip-box { background: rgba(59,130,246,0.06); border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; }
+    .quiz-option { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; cursor: pointer; }
+    .quiz-option:hover { border-color: rgba(20,184,166,0.4); background: rgba(20,184,166,0.08); }
+    .quiz-option.correct { border-color: #22c55e; background: rgba(34,197,94,0.12); }
+    .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.12); }
+    .quiz-option.selected { border-color: #14b8a6; background: rgba(20,184,166,0.12); }
+    code.inline { background: rgba(20,184,166,0.12); color: #2dd4bf; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .toc-link.active { color: #14b8a6; }
+    .badge-m1 { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); color: #2dd4bf; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-teal-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <span class="text-black font-black text-xs font-mono">N</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="index.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← All Modules</a>
+        <a href="module2.html" class="px-3 py-1.5 rounded-lg glass border border-teal-500/20 text-teal-400 text-xs hover:border-teal-400/40 transition-all">Next: Packages →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero -->
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-teal-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m1 px-3 py-1 rounded-full text-xs font-mono mb-6">MODULE 01 / 06</span>
+        <div class="text-5xl mb-4">👤</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Linux User <span class="text-teal-400">Management</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Understanding users, root, UIDs, creating and managing user accounts — the foundation of Linux security.</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-8 text-sm text-gray-500">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-teal-400"></span>12 Concepts</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>10 Commands</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400"></span>Quiz at the bottom</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm" id="toc">
+            <a href="#section1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">1. Users vs Root</a>
+            <a href="#section2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">2. UID Explained</a>
+            <a href="#section3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">3. Creating a User</a>
+            <a href="#section4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">4. Deleting a User</a>
+            <a href="#section5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">5. Listing Users</a>
+            <a href="#section6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">6. Switching Users (su)</a>
+            <a href="#section7" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">7. sudo / Superuser DO</a>
+            <a href="#section8" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors">8. Managing sudo Access</a>
+            <a href="#quiz" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-teal-400 hover:bg-teal-500/5 transition-colors font-semibold mt-3 border border-teal-500/20 text-center">📝 Take Quiz</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="lg:col-span-3 space-y-10">
+
+        <!-- Section 1 -->
+        <section id="section1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">Understanding Users vs Root</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed">Linux is a <strong class="text-white">multi-user operating system</strong> — multiple users can access the system simultaneously. Each user has a unique identity with specific permissions and restrictions. <code class="inline">d/t</code> means "different than" — the comparison of regular users vs the root superuser.</p>
+
+          <!-- Key concept table -->
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Aspect</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Regular User</th>
+                  <th class="text-left py-3 px-4 text-teal-400 font-semibold">Root User</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                <tr>
+                  <td class="py-3 px-4 text-gray-400 font-medium">Permissions</td>
+                  <td class="py-3 px-4 text-gray-300">Limited permissions</td>
+                  <td class="py-3 px-4 text-green-400 font-mono">Unrestricted access</td>
+                </tr>
+                <tr class="bg-gray-900/30">
+                  <td class="py-3 px-4 text-gray-400 font-medium">Home Directory</td>
+                  <td class="py-3 px-4 font-mono text-cyan-400">/home/username</td>
+                  <td class="py-3 px-4 font-mono text-cyan-400">/root</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 text-gray-400 font-medium">System File Access</td>
+                  <td class="py-3 px-4 text-gray-300">Can't modify system files</td>
+                  <td class="py-3 px-4 text-red-400">Can modify anything</td>
+                </tr>
+                <tr class="bg-gray-900/30">
+                  <td class="py-3 px-4 text-gray-400 font-medium">UID (User ID)</td>
+                  <td class="py-3 px-4 font-mono text-yellow-400">UID ≥ 1000</td>
+                  <td class="py-3 px-4 font-mono text-yellow-400">UID = 0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tip-box p-4">
+            <p class="text-blue-300 text-sm font-semibold mb-1">💡 Two main user types:</p>
+            <ul class="text-gray-400 text-sm space-y-1 list-disc list-inside">
+              <li><strong class="text-white">Regular Users</strong> — Limited scope, cannot install software system-wide or modify system configs</li>
+              <li><strong class="text-white">Root User</strong> — The superuser, UID = 0, god-level access to everything on the system</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="section2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">UID — User Identifier</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><strong class="text-white">UID</strong> stands for <em>User Identifier</em> — a unique numerical value assigned to each user account. Linux uses UIDs internally to track who owns files and processes.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-center">
+              <div class="text-2xl font-black text-red-400 font-mono mb-1">0</div>
+              <div class="text-sm font-bold text-white mb-1">Root</div>
+              <div class="text-xs text-gray-500">Always UID 0, grants all privileges</div>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-center">
+              <div class="text-2xl font-black text-yellow-400 font-mono mb-1">1–999</div>
+              <div class="text-sm font-bold text-white mb-1">System Accounts</div>
+              <div class="text-xs text-gray-500">Reserved for services & daemons</div>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-center">
+              <div class="text-2xl font-black text-teal-400 font-mono mb-1">1000+</div>
+              <div class="text-sm font-bold text-white mb-1">Regular Users</div>
+              <div class="text-xs text-gray-500">Normal user accounts start here</div>
+            </div>
+          </div>
+          <div class="terminal-block">
+            <div class="terminal-bar flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+              <span class="ml-2 text-gray-500 text-xs">Check your UID</span>
+            </div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Show current user</span></p>
+              <p><span class="cmd">whoami</span></p>
+              <p class="text-gray-500 pl-4">student</p>
+              <p class="mt-2"><span class="comment"># Show full user info: UID, GID, groups</span></p>
+              <p><span class="cmd">id</span></p>
+              <p class="text-gray-500 pl-4">uid=1000(student) gid=1000(student) groups=1000(student),27(sudo)</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="section3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">Creating a User</h2>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed">The <code class="inline">useradd</code> command creates new user accounts. You need <strong class="text-white">root/sudo privileges</strong> to create users.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+              <span class="ml-2 text-gray-500 text-xs">Creating a new user</span>
+            </div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Create a user and their home directory</span></p>
+              <p><span class="flag">sudo</span> <span class="cmd">useradd</span> <span class="flag">-m</span> username</p>
+              <p class="mt-3"><span class="comment"># Set the user's password</span></p>
+              <p><span class="flag">sudo</span> <span class="cmd">passwd</span> username</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <h3 class="text-lg font-semibold text-white">Command Breakdown — every part explained:</h3>
+            <div class="space-y-2">
+              <div class="highlight-box p-3 flex items-start gap-3">
+                <code class="inline shrink-0">sudo</code>
+                <p class="text-gray-400 text-sm">Execute with superuser privileges. Without this, the command would be denied.</p>
+              </div>
+              <div class="highlight-box p-3 flex items-start gap-3">
+                <code class="inline shrink-0">useradd</code>
+                <p class="text-gray-400 text-sm">The command to <strong class="text-white">add a new user</strong> to the system. Creates entries in <code class="inline">/etc/passwd</code>, <code class="inline">/etc/shadow</code>, and <code class="inline">/etc/group</code>.</p>
+              </div>
+              <div class="highlight-box p-3 flex items-start gap-3">
+                <code class="inline shrink-0">-m</code>
+                <p class="text-gray-400 text-sm">Flag that <strong class="text-white">creates the user's home directory</strong> automatically at <code class="inline">/home/username</code>. Without <code class="inline">-m</code>, no home directory is created on some distros.</p>
+              </div>
+              <div class="highlight-box p-3 flex items-start gap-3">
+                <code class="inline shrink-0">username</code>
+                <p class="text-gray-400 text-sm">The <strong class="text-white">login name</strong> for the new user. Replace with the actual desired username (e.g., <code class="inline">alice</code>, <code class="inline">bob</code>).</p>
+              </div>
+              <div class="highlight-box p-3 flex items-start gap-3">
+                <code class="inline shrink-0">passwd</code>
+                <p class="text-gray-400 text-sm">Command to <strong class="text-white">set or change</strong> the user's password. After running, you'll be prompted to enter the new password twice.</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 tip-box p-4 text-sm">
+            <p class="text-blue-300 font-semibold mb-2">💡 Pro Tips for useradd:</p>
+            <div class="terminal-block">
+              <div class="p-3 text-xs space-y-1">
+                <p><span class="comment"># Add to a specific group during creation</span></p>
+                <p><span class="flag">sudo</span> <span class="cmd">useradd</span> <span class="flag">-m -G sudo,developers</span> alice</p>
+                <p class="mt-2"><span class="comment"># Set a custom default shell</span></p>
+                <p><span class="flag">sudo</span> <span class="cmd">useradd</span> <span class="flag">-m -s /bin/zsh</span> alice</p>
+                <p class="mt-2"><span class="comment"># Set an account expiration date</span></p>
+                <p><span class="flag">sudo</span> <span class="cmd">useradd</span> <span class="flag">-m -e 2026-12-31</span> alice</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="section4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400 font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">Deleting a User</h2>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed">The <code class="inline">userdel</code> command removes user accounts. Crucial for maintaining system security — always remove accounts that are no longer needed.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+              <span class="ml-2 text-gray-500 text-xs">Deleting a user</span>
+            </div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Delete user and remove home directory</span></p>
+              <p><span class="flag">sudo</span> <span class="cmd">userdel</span> <span class="flag">-r</span> username</p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">userdel</code>
+              <p class="text-gray-400 text-sm">Command to <strong class="text-white">delete a user account</strong>. Modifies <code class="inline">/etc/passwd</code>, <code class="inline">/etc/shadow</code>, <code class="inline">/etc/group</code>.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-r</code>
+              <p class="text-gray-400 text-sm">Flag that <strong class="text-white">removes the user's home directory</strong> (<code class="inline">/home/username</code>) and mail spool. Without <code class="inline">-r</code>, the account is removed but files remain.</p>
+            </div>
+          </div>
+          <div class="mt-4 warn-box p-4 text-sm">
+            <p class="text-yellow-300 font-semibold mb-1">⚠️ Important:</p>
+            <p class="text-gray-400">Files outside the home directory owned by a deleted user remain on the system, owned by the old UID number. Use <code class="inline">find / -nouser</code> to locate orphaned files after deletion.</p>
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="section5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">05</span>
+            <h2 class="text-2xl font-bold text-white">Listing Users — /etc/passwd</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><code class="inline">/etc/passwd</code> is a <strong class="text-white">system file</strong> that contains information about all user accounts. Each line represents one user.</p>
+          <div class="terminal-block mb-4">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># View all users on the system</span></p>
+              <p><span class="cmd">cat</span> /etc/passwd</p>
+              <p class="mt-2 output">root:x:0:0:root:/root:/bin/bash</p>
+              <p class="output">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</p>
+              <p class="output">alice:x:1000:1000:Alice:/home/alice:/bin/bash</p>
+            </div>
+          </div>
+          <div class="highlight-box p-4 text-sm">
+            <p class="text-teal-300 font-semibold mb-2">📋 /etc/passwd Format:</p>
+            <p class="font-mono text-xs text-gray-300 mb-2">username : password : UID : GID : comment : home_dir : shell</p>
+            <p class="text-gray-500 text-xs">The <code class="inline">x</code> in the password field means the actual password hash is stored in <code class="inline">/etc/shadow</code> (which is only readable by root).</p>
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="section6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">06</span>
+            <h2 class="text-2xl font-bold text-white">Switching Users — <code class="text-teal-400">su</code></h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><code class="inline">su</code> stands for <strong class="text-white">"Substitute User"</strong> or "Switch User". It lets you log in as a different user from within your current session.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Switching users</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Switch to another user (requires their password)</span></p>
+              <p><span class="cmd">su</span> <span class="flag">-</span> username</p>
+              <p class="mt-2"><span class="comment"># Switch to root (requires root password)</span></p>
+              <p><span class="cmd">su</span> <span class="flag">-</span></p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">su</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Switch User</strong> — opens a shell session as another user. You'll be prompted for that user's password.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-</code>
+              <p class="text-gray-400 text-sm">The dash <strong class="text-white">loads the target user's full environment</strong> (environment variables, working directory set to their home). Without <code class="inline">-</code>, you keep your current environment.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7 -->
+        <section id="section7" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold text-sm font-mono">07</span>
+            <h2 class="text-2xl font-bold text-white">sudo — SuperUser DO</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed"><code class="inline">sudo</code> stands for <strong class="text-white">"superuser do"</strong>. It's a program that allows authorized users to execute commands as another user (typically root) without switching to that user. It's one of the most important security features in Linux.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">Basic sudo commands</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="cmd">sudo</span> command          <span class="comment"># Run single command as root</span></p>
+              <p><span class="cmd">sudo -i</span>               <span class="comment"># Open root shell (interactive)</span></p>
+              <p><span class="cmd">sudo su</span>               <span class="comment"># Switch to root user</span></p>
+              <p><span class="cmd">whoami</span>                <span class="comment"># Check current user</span></p>
+              <p><span class="cmd">id</span>                    <span class="comment"># Show UID, GID, groups</span></p>
+              <p><span class="cmd">sudo -l</span>               <span class="comment"># List your sudo privileges</span></p>
+              <p><span class="cmd">sudo -u alice command</span> <span class="comment"># Run as another user (not just root)</span></p>
+            </div>
+          </div>
+
+          <div class="space-y-2 mb-6">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">sudo command</code>
+              <p class="text-gray-400 text-sm">Executes a <strong class="text-white">single command with root privileges</strong>, then returns to your regular user. No need to know the root password — sudo uses YOUR password.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">sudo -i</code>
+              <p class="text-gray-400 text-sm">Opens an <strong class="text-white">interactive root shell</strong>. You stay as root until you type <code class="inline">exit</code>. Simulates a full root login.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">whoami</code>
+              <p class="text-gray-400 text-sm">Displays the <strong class="text-white">current logged-in user</strong> name. Quick way to verify who you're running as.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">id</code>
+              <p class="text-gray-400 text-sm">Shows detailed user information: <strong class="text-white">UID, GID, and group memberships</strong>. More detailed than whoami.</p>
+            </div>
+          </div>
+
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-sm">
+            <p class="text-white font-semibold mb-2">How does sudo work?</p>
+            <p class="text-gray-400 mb-3">sudo checks a special configuration file called <code class="inline">/etc/sudoers</code>. This file contains a list of users and groups allowed to use sudo, and what commands they can run. Only users listed in this file can use sudo.</p>
+            <div class="flex items-center gap-2 text-gray-500 text-xs">
+              <span class="w-2 h-2 bg-teal-400 rounded-full"></span>
+              <span>sudo logs every command — great for auditing and security</span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-500 text-xs mt-1">
+              <span class="w-2 h-2 bg-teal-400 rounded-full"></span>
+              <span>After authentication, timestamps let you re-run sudo for ~15 min without password</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 8 -->
+        <section id="section8" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-sm font-mono">08</span>
+            <h2 class="text-2xl font-bold text-white">Managing sudo Access</h2>
+          </div>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="cmd">sudo visudo</span>                     <span class="comment"># Safely edit sudoers file</span></p>
+              <p class="mt-2"><span class="comment"># Add user to sudo group (Debian/Ubuntu)</span></p>
+              <p><span class="cmd">usermod</span> <span class="flag">-aG sudo</span> username</p>
+              <p class="mt-2"><span class="comment"># Add user to wheel group (Arch/RHEL)</span></p>
+              <p><span class="cmd">usermod</span> <span class="flag">-aG wheel</span> username</p>
+            </div>
+          </div>
+          <div class="space-y-2 mb-6">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">sudo visudo</code>
+              <p class="text-gray-400 text-sm">Opens the sudoers file in a <strong class="text-white">safe editor with syntax validation</strong>. If you make a syntax error, visudo will warn you instead of saving the broken file.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">usermod</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Modifies user account properties</strong>. Used to change groups, shell, home directory, and other attributes of an existing user.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-aG</code>
+              <p class="text-gray-400 text-sm">Two flags combined: <code class="inline">-a</code> means <strong class="text-white">append</strong> (don't remove from other groups), <code class="inline">-G</code> means <strong class="text-white">add to supplementary groups</strong>. Critical: without <code class="inline">-a</code>, you'd remove the user from ALL other groups!</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">sudo / wheel</code>
+              <p class="text-gray-400 text-sm"><code class="inline">sudo</code> is the group name on <strong class="text-white">Debian/Ubuntu</strong>. <code class="inline">wheel</code> is the group name on <strong class="text-white">Arch/RHEL</strong>. Both grant sudo privileges to members.</p>
+            </div>
+          </div>
+          <div class="warn-box p-4 text-sm">
+            <p class="text-yellow-300 font-semibold mb-1">✅ Best Practice:</p>
+            <p class="text-gray-400">Always use <code class="inline">sudo visudo</code> to edit the sudoers file — NEVER a regular text editor like <code class="inline">nano /etc/sudoers</code>. If you introduce a syntax error without visudo's validation, you could <strong class="text-yellow-200">permanently lock yourself out of sudo access</strong>!</p>
+          </div>
+        </section>
+
+        <!-- QUIZ SECTION -->
+        <section id="quiz" class="section-anchor glass-card rounded-2xl p-6 sm:p-8 border border-teal-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📝</span>
+            <h2 class="text-2xl font-bold text-white">Module 1 Quiz</h2>
+            <span class="ml-auto text-sm font-mono text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full border border-teal-400/20" id="score-display">0 / 10</span>
+          </div>
+          <p class="text-gray-500 text-sm mb-8">Select the best answer for each question. Immediate feedback on every choice.</p>
+
+          <div id="quiz-container" class="space-y-8"></div>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-bold hover:from-teal-400 hover:to-cyan-400 transition-all">Check All Answers</button>
+            <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-teal-500/50 hover:text-teal-400 transition-all">Reset Quiz</button>
+          </div>
+          <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+          <a href="index.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-teal-500/50 hover:text-teal-400 transition-all text-sm">← Back to All Modules</a>
+          <a href="module2.html" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500/20 to-cyan-500/20 border border-teal-500/30 text-teal-400 hover:border-teal-400/60 hover:from-teal-500/30 transition-all text-sm font-semibold">Next: Package Installation →</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "What does UID stand for in Linux?", opts: ["Universal Interface Definition","User Identifier","Unix ID Directory","Unique Installation Data"], correct: 1 },
+      { q: "What is the UID of the root user?", opts: ["1","100","1000","0"], correct: 3 },
+      { q: "Which command creates a new user WITH a home directory?", opts: ["sudo adduser username","sudo useradd username","sudo useradd -m username","sudo create -h username"], correct: 2 },
+      { q: "What does the -r flag do in 'sudo userdel -r username'?", opts: ["Removes system-wide permissions","Removes the user's home directory and mail spool","Revokes root access","Renames the user"], correct: 1 },
+      { q: "Which file lists all user accounts on a Linux system?", opts: ["/etc/users","/etc/shadow","/etc/passwd","/usr/share/users"], correct: 2 },
+      { q: "What does 'su' stand for?", opts: ["Super User","System Update","Substitute User","Shell Utility"], correct: 2 },
+      { q: "What is the full meaning of sudo?", opts: ["System User Default Operations","SuperUser DO","Sudo Utility Default Options","Switch User and Do"], correct: 1 },
+      { q: "Which command safely edits the sudoers file?", opts: ["nano /etc/sudoers","sudo visudo","sudo edit sudoers","vi /etc/sudoers"], correct: 1 },
+      { q: "On Debian/Ubuntu, which group grants sudo privileges?", opts: ["wheel","admin","root","sudo"], correct: 3 },
+      { q: "In 'usermod -aG sudo alice', what does the -a flag do?", opts: ["Add alice to the admin group only","Append — prevents removing alice from other groups","Authenticate the change","Apply immediate effect"], correct: 1 }
+    ];
+
+    let answers = new Array(questions.length).fill(null);
+    let submitted = false;
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+      questions.forEach((q, qi) => {
+        const div = document.createElement('div');
+        div.className = 'border border-gray-800 rounded-xl p-5';
+        div.innerHTML = `
+          <p class="text-white font-semibold mb-4"><span class="text-teal-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p>
+          <div class="space-y-2" id="opts-${qi}">
+            ${q.opts.map((o, oi) => `
+              <button onclick="selectAnswer(${qi},${oi})" id="opt-${qi}-${oi}" class="quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3">
+                <span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs font-mono">${String.fromCharCode(65+oi)}</span>
+                ${o}
+              </button>`).join('')}
+          </div>
+          <div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectAnswer(qi, oi) {
+      if (submitted) return;
+      answers[qi] = oi;
+      const opts = document.querySelectorAll(`#opts-${qi} button`);
+      opts.forEach((b, i) => { b.className = 'quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3' + (i === oi ? ' selected' : ''); });
+      document.getElementById('score-display').textContent = `${answers.filter(a=>a!==null).length} / ${questions.length}`;
+    }
+
+    function submitQuiz() {
+      submitted = true;
+      let score = 0;
+      questions.forEach((q, qi) => {
+        const opts = document.querySelectorAll(`#opts-${qi} button`);
+        opts.forEach((b, i) => {
+          b.className = 'quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3';
+          if (i === q.correct) b.classList.add('correct');
+          else if (i === answers[qi] && i !== q.correct) b.classList.add('wrong');
+        });
+        const fb = document.getElementById(`feedback-${qi}`);
+        fb.classList.remove('hidden');
+        if (answers[qi] === q.correct) {
+          score++;
+          fb.className = 'mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';
+          fb.textContent = '✓ Correct!';
+        } else {
+          fb.className = 'mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';
+          fb.textContent = `✗ Correct answer: ${q.opts[q.correct]}`;
+        }
+      });
+      const resultDiv = document.getElementById('quiz-result');
+      resultDiv.classList.remove('hidden');
+      const pct = Math.round((score/questions.length)*100);
+      resultDiv.className = `mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-teal-500/30 bg-teal-500/10':'border-red-500/30 bg-red-500/10'}`;
+      resultDiv.innerHTML = `<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-teal-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Outstanding! You mastered Linux User Management!':pct>=70?'Good job! Review the topics you missed.':'Keep studying — review the module content above.'}</div>`;
+      document.getElementById('score-display').textContent = `${score} / ${questions.length}`;
+    }
+
+    function resetQuiz() { submitted = false; answers = new Array(questions.length).fill(null); document.getElementById('quiz-result').classList.add('hidden'); document.getElementById('score-display').textContent = '0 / 10'; renderQuiz(); }
+
+    renderQuiz();
+
+    // TOC active state
+    const sections = document.querySelectorAll('.section-anchor');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      tocLinks.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#'+current); });
+    });
+  </script>
+</body>
+</html>

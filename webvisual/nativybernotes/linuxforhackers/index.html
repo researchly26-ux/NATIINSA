@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Getting Started with the Basics — Linux for Hackers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        
+        .grid-bg { background-image: linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
+        .glass-card { background: linear-gradient(135deg, rgba(22,27,34,0.95) 0%, rgba(13,17,23,0.98) 100%); border: 1px solid rgba(88,166,255,0.15); }
+        .terminal-block { background: #010409; border: 1px solid rgba(88,166,255,0.3); border-radius: 10px; font-family: 'Fira Code', monospace; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .terminal-bar { background: #0d1117; border-bottom: 1px solid rgba(88,166,255,0.2); padding: 8px 14px; }
+        
+        .cmd { color: #58a6ff; }
+        .flag { color: #00ffcc; }
+        .comment { color: #6e7681; font-style: italic; }
+        .output { color: #8b949e; }
+        
+        .highlight-box { background: rgba(88,166,255,0.05); border-left: 3px solid #58a6ff; border-radius: 0 8px 8px 0; }
+        .warn-box { background: rgba(255,123,114,0.05); border-left: 3px solid #ff7b72; border-radius: 0 8px 8px 0; }
+        .tip-box { background: rgba(0,255,204,0.05); border-left: 3px solid #00ffcc; border-radius: 0 8px 8px 0; }
+        
+        code.inline { background: rgba(88,166,255,0.1); color: #58a6ff; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.875em; }
+        .section-anchor { scroll-margin-top: 80px; }
+        .toc-link.active { color: #00ffcc; background: rgba(0,255,204,0.05); border-left-color: #00ffcc; }
+        .badge-m1 { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: #58a6ff; }
+        img { display: block; max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #30363d; margin: 2rem auto; }
+        
+        .glitch { position: relative; color: white; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+        .glitch::before { left: 2px; text-shadow: -1px 0 #ff7b72; clip: rect(24px, 550px, 90px, 0); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
+        .glitch::after { left: -2px; text-shadow: -1px 0 #58a6ff; clip: rect(85px, 550px, 140px, 0); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
+        @keyframes glitch-anim { 0% { clip: rect(24px, 9999px, 83px, 0); } 100% { clip: rect(104px, 9999px, 149px, 0); } }
+        @keyframes glitch-anim-2 { 0% { clip: rect(11px, 9999px, 110px, 0); } 100% { clip: rect(93px, 9999px, 33px, 0); } }
+    </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 bg-[#0d1117]/80 backdrop-blur-md border-b border-[#30363d]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-[#58a6ff] to-[#00ffcc] flex items-center justify-center shadow-lg shadow-[#58a6ff]/30">
+           <span class="text-[#0d1117] font-black text-xs font-mono">>_</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-[#58a6ff]">Linux</span><span class="text-white">ForHackers</span></span>
+      </a>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="../index.html" class="text-gray-400 hover:text-white transition-colors">← Back to NatIvyberNotes</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <!-- Hero / Header -->
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-[#30363d]">
+      <div class="absolute inset-0 bg-gradient-to-b from-[#58a6ff]/5 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m1 px-3 py-1 rounded-full text-xs font-mono mb-6">CHAPTER 01</span>
+        <div class="text-5xl mb-4 text-[#00ffcc] font-mono">>_</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4 glitch" data-text="Getting Started with the Basics">Getting Started with the Basics</h1>
+        <p class="text-[#8b949e] text-lg max-w-2xl mx-auto">Master the foundational hacking utilities: the Linux filesystem, vital terminal commands, finding binaries, and text filtering.</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-8 text-sm text-[#8b949e]">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#58a6ff]"></span>8 Modules</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#00ffcc]"></span>12 Commands</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- TOC Sidebar -->
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-[#8b949e] uppercase tracking-widest mb-4">Chapter Modules</p>
+          <nav class="space-y-1 text-sm font-medium" id="toc">
+            <a href="#mod1" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">1. Terms and Concepts</a>
+            <a href="#mod2" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">2. A Tour of Kali</a>
+            <a href="#mod3" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">3. The Linux Filesystem</a>
+            <a href="#mod4" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">4. Basic Linux Commands</a>
+            <a href="#mod5" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">5. Getting Help</a>
+            <a href="#mod6" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">6. Finding Stuff</a>
+            <a href="#mod7" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">7. Filtering with grep</a>
+            <a href="#mod8" class="toc-link block py-2 px-3 rounded-lg text-gray-400 hover:text-[#00ffcc] border-l-2 border-transparent transition-all">8. Modifying Files</a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="lg:col-span-3 space-y-10">
+        
+        <!-- Module 1 -->
+        <section id="mod1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">Introductory Terms and Concepts</h2>
+          </div>
+          <p class="text-[#8b949e] mb-6 leading-relaxed">Before we begin our journey through Linux Basics for Hackers, returning to the absolute foundational definitions is critical for navigating the rest of the course.</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="highlight-box p-4">
+              <h4 class="font-bold text-white mb-1"><code class="inline">Binaries</code></h4>
+              <p class="text-gray-400 text-sm">Executable files, similar to Windows <code class="inline">.exe</code> files. Found in <code class="inline">/usr/bin</code> or <code class="inline">/usr/sbin</code> including utilities like <span class="cmd">ls</span>, <span class="cmd">cat</span>, and hacking tools like <span class="cmd">aircrack-ng</span>.</p>
+            </div>
+            <div class="highlight-box p-4">
+              <h4 class="font-bold text-white mb-1"><code class="inline">Case Sensitivity</code></h4>
+              <p class="text-gray-400 text-sm">Linux is strictly case-sensitive. <code class="inline">Desktop</code> is completely different from <code class="inline">desktop</code>. Always check your casing if you get "file not found".</p>
+            </div>
+            <div class="highlight-box p-4">
+              <h4 class="font-bold text-white mb-1"><code class="inline">root</code></h4>
+              <p class="text-gray-400 text-sm">The all-powerful superuser. Most hacker tools demand root access since they manipulate network interfaces and system structures directly.</p>
+            </div>
+            <div class="highlight-box p-4">
+              <h4 class="font-bold text-white mb-1"><code class="inline">Shell</code></h4>
+              <p class="text-gray-400 text-sm">The environment and interpreter for commands. The default on Kali is usually <code class="inline">bash</code> or <code class="inline">zsh</code>.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Module 2 -->
+        <section id="mod2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">A Tour of Kali</h2>
+          </div>
+          <p class="text-[#8b949e] mb-4 leading-relaxed">Kali Linux is the standard penetration testing distribution, built with hundreds of tools pre-installed.</p>
+          
+          <div class="space-y-6">
+              <div class="p-4 bg-[#0d1117] border border-[#30363d] rounded-xl text-sm text-gray-400">
+                  <p class="mb-4">Log in using the root account username <code class="inline">root</code> and the default backward password <code class="inline">toor</code>.</p>
+                  <img src="images/image18.png" alt="Kali Login Screen" />
+              </div>
+              
+              <div class="p-4 bg-[#0d1117] border border-[#30363d] rounded-xl text-sm text-gray-400">
+                  <p class="mb-4">The first step in using Kali is clicking the Terminal icon to launch the shell prompt — your primary weapon.</p>
+                  <img src="images/image20.png" alt="Kali Terminal" />
+              </div>
+          </div>
+          
+          <div class="mt-6 tip-box p-4 text-sm">
+            <p class="text-[#00ffcc] font-semibold mb-1">💡 Default Password Warning:</p>
+            <p class="text-gray-400">Never leave your Kali password as default. Change it immediately using the <span class="cmd">passwd</span> command inside the terminal.</p>
+          </div>
+        </section>
+
+        <!-- Module 3 -->
+        <section id="mod3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">The Linux Filesystem</h2>
+          </div>
+          <p class="text-[#8b949e] mb-6 leading-relaxed">Unlike Windows, which uses physical drives (C:, D:) at the base, Linux utilizes a singular logical inverted-tree filesystem starting at the Root directory (<code class="inline">/</code>).</p>
+          
+          <img src="images/image21.png" alt="Linux Filesystem Hierarchy" class="mb-8" />
+          
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-sm">
+              <tbody class="divide-y divide-[#30363d]">
+                <tr>
+                  <td class="py-3 px-4 font-mono text-[#00ffcc]">/</td>
+                  <td class="py-3 px-4 text-gray-300">The absolute root of the filesystem hierarchy.</td>
+                </tr>
+                <tr class="bg-[#0d1117]/50">
+                  <td class="py-3 px-4 font-mono text-[#00ffcc]">/root</td>
+                  <td class="py-3 px-4 text-gray-300">The home directory of the all-powerful root user (different from `/`!).</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-mono text-[#00ffcc]">/etc</td>
+                  <td class="py-3 px-4 text-gray-300">Contains system-wide configuration files (startup properties, networking, etc).</td>
+                </tr>
+                <tr class="bg-[#0d1117]/50">
+                  <td class="py-3 px-4 font-mono text-[#00ffcc]">/home</td>
+                  <td class="py-3 px-4 text-gray-300">Where standard user directories are stored.</td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 font-mono text-[#00ffcc]">/bin</td>
+                  <td class="py-3 px-4 text-gray-300">Contains the critical application binaries (the executable files).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        
+        <!-- Module 4 -->
+        <section id="mod4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">Basic Commands in Linux</h2>
+          </div>
+          
+          <div class="space-y-8">
+              <!-- pwd -->
+              <div>
+                  <h3 class="text-lg font-semibold text-white mb-3">1. <code class="inline">pwd</code> (Print Working Directory)</h3>
+                  <p class="text-gray-400 text-sm mb-3">The terminal does not always show your full path. Use this to find your exact location.</p>
+                  <div class="terminal-block">
+                    <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#ff7b72]"></div><div class="w-3 h-3 rounded-full bg-[#d2a8ff]"></div><div class="w-3 h-3 rounded-full bg-[#3fb950]"></div></div>
+                    <div class="p-4 text-sm space-y-1">
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">pwd</span></p>
+                      <p class="output pl-4">/root</p>
+                    </div>
+                  </div>
+              </div>
+              
+              <!-- whoami -->
+              <div>
+                  <h3 class="text-lg font-semibold text-white mb-3">2. <code class="inline">whoami</code></h3>
+                  <p class="text-gray-400 text-sm mb-3">Verify the user identity you are currently operating as.</p>
+                  <div class="terminal-block">
+                    <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#ff7b72]"></div><div class="w-3 h-3 rounded-full bg-[#d2a8ff]"></div><div class="w-3 h-3 rounded-full bg-[#3fb950]"></div></div>
+                    <div class="p-4 text-sm space-y-1">
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">whoami</span></p>
+                      <p class="output pl-4">root</p>
+                    </div>
+                  </div>
+              </div>
+              
+              <!-- cd -->
+              <div>
+                  <h3 class="text-lg font-semibold text-white mb-3">3. <code class="inline">cd</code> (Change Directory)</h3>
+                  <p class="text-gray-400 text-sm mb-3">Navigate the text-based hierarchy using absolute or relative paths.</p>
+                  <div class="terminal-block">
+                    <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#ff7b72]"></div><div class="w-3 h-3 rounded-full bg-[#d2a8ff]"></div><div class="w-3 h-3 rounded-full bg-[#3fb950]"></div></div>
+                    <div class="p-4 text-sm space-y-1">
+                      <p><span class="comment"># Move to the configuration directory</span></p>
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">cd</span> <span class="flag">/etc</span></p>
+                      <p class="mt-2"><span class="comment"># Move UP one level towards the root</span></p>
+                      <p><span class="text-green-400">kali:/etc &gt;</span> <span class="cmd">cd</span> <span class="flag">..</span></p>
+                      <p class="mt-2"><span class="comment"># Jump straight to the top of the tree</span></p>
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">cd</span> <span class="flag">/</span></p>
+                    </div>
+                  </div>
+              </div>
+              
+              <!-- ls -->
+              <div>
+                  <h3 class="text-lg font-semibold text-white mb-3">4. <code class="inline">ls</code> (List)</h3>
+                  <p class="text-gray-400 text-sm mb-3">List the contents, visibility, and permissions of directories.</p>
+                  <div class="terminal-block">
+                    <div class="p-4 text-sm space-y-1">
+                      <p><span class="comment"># Standard list</span></p>
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">ls</span></p>
+                      <p class="output pl-4">bin initrd.img media run var</p>
+                      
+                      <p class="mt-3"><span class="comment"># Long format list (shows permissions & owners)</span></p>
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">ls</span> <span class="flag">-l</span></p>
+                      
+                      <p class="mt-3"><span class="comment"># Long format AND show hidden files (starts with .)</span></p>
+                      <p><span class="text-green-400">kali &gt;</span> <span class="cmd">ls</span> <span class="flag">-la</span></p>
+                    </div>
+                  </div>
+                  <div class="highlight-box p-3 flex items-start gap-3 mt-3">
+                    <code class="inline shrink-0">-la</code>
+                    <p class="text-gray-400 text-sm">Flags can be combined! <code class="inline">-l -a</code> is identical to writing <code class="inline">-la</code>.</p>
+                  </div>
+              </div>
+          </div>
+        </section>
+
+        <!-- Module 5 -->
+        <section id="mod5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">05</span>
+            <h2 class="text-2xl font-bold text-white">Getting Help</h2>
+          </div>
+          <p class="text-[#8b949e] mb-6 leading-relaxed">Nearly every command or hacking tool in Linux ships with parameter dictionaries. If you forget your flags, Linux has you covered.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># The help switch (a double-dash for full words)</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">aircrack-ng</span> <span class="flag">--help</span></p>
+              
+              <p class="mt-3"><span class="comment"># Sometimes tools use single-dash single-letter options</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">nmap</span> <span class="flag">-h</span></p>
+              
+              <p class="mt-3"><span class="comment"># Open the complete manual pager for a tool</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">man</span> <span class="flag">aircrack-ng</span></p>
+            </div>
+          </div>
+          <div class="tip-box p-4 text-sm">
+            <p class="text-[#00ffcc] font-semibold mb-1">📖 The man Command:</p>
+            <p class="text-gray-400"><code class="inline">man</code> opens the command in a "pager". Scroll with the arrows or <code class="inline">Space</code>, and press <code class="inline">q</code> to quit back to the terminal prompt.</p>
+          </div>
+        </section>
+
+        <!-- Module 6 -->
+        <section id="mod6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">06</span>
+            <h2 class="text-2xl font-bold text-white">Finding Stuff</h2>
+          </div>
+          <p class="text-[#8b949e] mb-6 leading-relaxed">A core skill for a hacker is locating configuration files and exploits hidden across the hierarchy.</p>
+          
+          <div class="space-y-4 mb-6">
+              <div class="highlight-box p-4">
+                <code class="inline mb-2 block w-fit">locate</code>
+                <p class="text-gray-400 text-sm">Searches a local internal database. Extremely fast but only updates ~once a day. <br/><span class="font-mono mt-1 block text-[#8b949e]">kali &gt; locate aircrack-ng</span></p>
+              </div>
+              <div class="highlight-box p-4">
+                <code class="inline mb-2 block w-fit">whereis</code>
+                <p class="text-gray-400 text-sm">Locates only binary files, their source, and their manual pages.<br/><span class="font-mono mt-1 block text-[#8b949e]">kali &gt; whereis aircrack-ng</span></p>
+              </div>
+              <div class="highlight-box p-4">
+                <code class="inline mb-2 block w-fit">which</code>
+                <p class="text-gray-400 text-sm">Searches STRICTLY inside the directories configured in your <code class="inline">$PATH</code> environment variable.<br/><span class="font-mono mt-1 block text-[#8b949e]">kali &gt; which aircrack-ng</span></p>
+              </div>
+          </div>
+          
+          <h3 class="text-lg font-bold text-white mt-8 mb-4">The Almighty <code class="inline">find</code> command</h3>
+          <p class="text-[#8b949e] text-sm mb-4">The most powerful local search available. It natively traverses directories matching exact conditions.</p>
+          
+          <div class="terminal-block mb-4">
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Search starting at Root (/) for standard files (-type f) named "apache2"</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">find</span> <span class="flag">/ -type f -name</span> apache2</p>
+              
+              <p class="mt-3"><span class="comment"># Target specific directories to speed up queries</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">find</span> <span class="flag">/etc -type f -name</span> apache2</p>
+              
+              <p class="mt-3"><span class="comment"># Use wildcards to find extensions (e.g. .conf)</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">find</span> <span class="flag">/etc -type f -name</span> "apache2.*"</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Module 7 -->
+        <section id="mod7" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">07</span>
+            <h2 class="text-2xl font-bold text-white">Filtering with grep</h2>
+          </div>
+          <p class="text-[#8b949e] mb-4 leading-relaxed"><code class="inline">grep</code> filters bulk text for specific keywords. It's universally used with <strong class="text-white">Pipes</strong> (<code class="inline">|</code>), which connect the output of one command blindly into the input of another.</p>
+          
+          <div class="terminal-block mb-6">
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># 'ps aux' generates a massive list of running processes</span></p>
+              <p><span class="comment"># We pipe it to grep to isolate only the apache server</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">ps</span> <span class="flag">aux</span> <span class="cmd">|</span> <span class="cmd">grep</span> apache2</p>
+            </div>
+          </div>
+          <div class="warn-box p-4 text-sm">
+            <p class="text-[#ff7b72] font-semibold mb-1">⚠️ Understanding the Pipe:</p>
+            <p class="text-gray-400">The pipe key is usually above your ENTER key. It completely redirects the stdout stream of <code class="inline">ps aux</code> directly into <code class="inline">grep</code> without caching it locally.</p>
+          </div>
+        </section>
+
+        <!-- Module 8 -->
+        <section id="mod8" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6 border-b border-[#30363d] pb-4">
+            <span class="w-8 h-8 rounded-lg bg-[#58a6ff]/20 border border-[#58a6ff]/30 flex items-center justify-center text-[#58a6ff] font-bold text-sm font-mono">08</span>
+            <h2 class="text-2xl font-bold text-white">Modifying Files</h2>
+          </div>
+          <p class="text-[#8b949e] mb-4 leading-relaxed">Most operations in hacking happen textless without GUI editors. You can use <code class="inline">cat</code> (concatenate) with Redirection characters (<code class="inline">&gt;</code>) to write files on the fly.</p>
+          
+          <div class="terminal-block mb-4">
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Creates/Overwrites a file. The prompt halts for input.</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">cat</span> <span class="flag">&gt;</span> hackingskills</p>
+              <p class="output pl-4">Hacking is the most valuable skill set of the 21st century!</p>
+              <p class="comment pl-4"># Press CTRL-D to save and exit</p>
+              
+              <p class="mt-4"><span class="comment"># Append to an existing file</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">cat</span> <span class="flag">&gt;&gt;</span> hackingskills</p>
+              <p class="output pl-4">Everyone should learn hacking</p>
+              
+              <p class="mt-4"><span class="comment"># Read the combined file</span></p>
+              <p><span class="text-green-400">kali &gt;</span> <span class="cmd">cat</span> <span class="flag">hackingskills</span></p>
+              <p class="output pl-4">Hacking is the most valuable skill set of the 21st century! Everyone should learn hacking</p>
+            </div>
+          </div>
+          <div class="highlight-box p-4 text-sm">
+            <p class="text-[#58a6ff] font-semibold mb-1">Redirection Summary:</p>
+            <ul class="list-disc pl-5 text-gray-400 space-y-1 mt-2">
+                <li><code class="inline">></code> : Overwrites the target file blindly with the new text.</li>
+                <li><code class="inline">>></code> : Safely appends text to the absolute bottom of the existing file.</li>
+            </ul>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // TOC active state script
+    const sections = document.querySelectorAll('.section-anchor');
+    const tocLinks = document.querySelectorAll('.toc-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 150) current = s.id; });
+      tocLinks.forEach(l => { 
+        l.classList.toggle('active', l.getAttribute('href') === '#'+current); 
+      });
+    });
+  </script>
+</body>
+</html>

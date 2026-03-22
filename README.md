@@ -17,9 +17,11 @@ This repository serves as a comprehensive log of my technical training during th
 | `Notes/` | Theoretical and practical guides on Linux and security tools. |
 | `Labs/` | Practical exercises, CTF write-ups, and assessments. |
 | `Assignments/` | Hands-on practice logs and command-line mastery drills. |
+| `webvisual/` | Source code for the interactive Linux Mastery web application. |
 
 ## 🔗 External Resources
 
+*   [NatIvyberNotes Interactive Course](https://insanotes.netlify.app/) — A visually rich web application crafted from my comprehensive Linux research notes.
 *   [Defense-Shield](https://github.com/Natnael/Defense-Shield) — Automated firewall configuration scripts.
 *   [Log-Analyzer](https://github.com/Natnael/Log-Analyzer) — Python tool for parsing system logs.
 *   [Sec-Configs](https://github.com/Natnael/Sec-Configs) — Hardened configuration files for Linux servers.

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module 2: Package Installation — NatIvyberNotes</title>
+  <meta name="description" content="Learn Linux package management: apt, pkg, pacman, yay — package managers for Debian, FreeBSD/Termux, and Arch Linux." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background-color: #030712; font-family: 'Inter', sans-serif; }
+    .grid-bg { background-image: linear-gradient(rgba(6,182,212,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+    .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(6,182,212,0.12); }
+    .glass-card { background: linear-gradient(135deg, rgba(13,21,38,0.95) 0%, rgba(10,15,30,0.98) 100%); border: 1px solid rgba(6,182,212,0.15); }
+    .terminal-block { background: #05100a; border: 1px solid #06b6d4; border-radius: 10px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+    .terminal-bar { background: #0a1a1a; border-bottom: 1px solid #06b6d433; padding: 8px 14px; }
+    .cmd { color: #67e8f9; } .flag { color: #fbbf24; } .comment { color: #4b5563; } .output { color: #9ca3af; }
+    .highlight-box { background: rgba(6,182,212,0.06); border-left: 3px solid #06b6d4; border-radius: 0 8px 8px 0; }
+    .warn-box { background: rgba(251,191,36,0.06); border-left: 3px solid #fbbf24; border-radius: 0 8px 8px 0; }
+    .tip-box { background: rgba(59,130,246,0.06); border-left: 3px solid #3b82f6; border-radius: 0 8px 8px 0; }
+    .quiz-option { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; cursor: pointer; }
+    .quiz-option:hover { border-color: rgba(6,182,212,0.4); background: rgba(6,182,212,0.08); }
+    .quiz-option.correct { border-color: #22c55e; background: rgba(34,197,94,0.12); }
+    .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.12); }
+    .quiz-option.selected { border-color: #06b6d4; background: rgba(6,182,212,0.12); }
+    code.inline { background: rgba(6,182,212,0.12); color: #67e8f9; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+    .section-anchor { scroll-margin-top: 80px; }
+    .badge-m2 { background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: #67e8f9; }
+    .toc-link.active { color: #06b6d4; }
+  </style>
+</head>
+<body class="min-h-screen text-gray-100">
+  <nav class="fixed top-0 w-full z-50 glass border-b border-cyan-500/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <span class="text-black font-black text-xs font-mono">N</span>
+        </div>
+        <span class="font-bold text-sm tracking-tight"><span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <a href="module1.html" class="text-gray-500 hover:text-white transition-colors hidden sm:block">← User Mgmt</a>
+        <a href="module3.html" class="px-3 py-1.5 rounded-lg glass border border-cyan-500/20 text-cyan-400 text-xs hover:border-cyan-400/40 transition-all">Next: Scripts →</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="grid-bg min-h-screen pt-16">
+    <div class="relative py-16 px-4 text-center overflow-hidden border-b border-gray-800/50">
+      <div class="absolute inset-0 bg-gradient-to-b from-cyan-900/10 to-transparent pointer-events-none"></div>
+      <div class="relative max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 badge-m2 px-3 py-1 rounded-full text-xs font-mono mb-6">MODULE 02 / 06</span>
+        <div class="text-5xl mb-4">📦</div>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mb-4">Package <span class="text-cyan-400">Installation</span></h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Master apt, pkg, pacman — every package manager explained with full command breakdowns for all major Linux distributions.</p>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <aside class="hidden lg:block lg:col-span-1">
+        <div class="sticky top-24 glass-card rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Contents</p>
+          <nav class="space-y-1 text-sm" id="toc">
+            <a href="#section1" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">1. What is a Package?</a>
+            <a href="#section2" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">2. apt — Debian/Ubuntu</a>
+            <a href="#section3" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">3. pkg — FreeBSD/Termux</a>
+            <a href="#section4" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">4. pacman — Arch Linux</a>
+            <a href="#section5" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">5. AUR & yay</a>
+            <a href="#section6" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors">6. Cheat Sheet</a>
+            <a href="#quiz" class="toc-link block py-1.5 px-3 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/5 transition-colors font-semibold mt-3 border border-cyan-500/20 text-center">📝 Take Quiz</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="lg:col-span-3 space-y-10">
+
+        <!-- Section 1: What is a package -->
+        <section id="section1" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">01</span>
+            <h2 class="text-2xl font-bold text-white">What is a Package?</h2>
+          </div>
+          <p class="text-gray-400 mb-4 leading-relaxed">A <strong class="text-white">package</strong> is a compressed archive containing software, libraries, configuration files, and metadata. <strong class="text-white">Package managers</strong> automate the installation, updating, and removal of software — handling dependencies automatically.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <h4 class="text-white font-semibold mb-2 text-sm">A Package Contains:</h4>
+              <ul class="text-gray-400 text-sm space-y-1.5">
+                <li class="flex items-center gap-2"><span class="text-cyan-400">→</span> Compiled program files (binaries)</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">→</span> Shared libraries</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">→</span> Configuration files</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">→</span> Documentation / man pages</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">→</span> Metadata (version, dependencies)</li>
+              </ul>
+            </div>
+            <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+              <h4 class="text-white font-semibold mb-2 text-sm">Package Manager Benefits:</h4>
+              <ul class="text-gray-400 text-sm space-y-1.5">
+                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Resolves dependencies automatically</li>
+                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Easy install/remove/update</li>
+                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Verified packages from repos</li>
+                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Keeps system consistent</li>
+                <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Security patches via upgrades</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: apt -->
+        <section id="section2" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">02</span>
+            <h2 class="text-2xl font-bold text-white">apt — Debian / Ubuntu / Kali / Parrot</h2>
+          </div>
+          <p class="text-gray-400 mb-2 leading-relaxed"><code class="inline">apt</code> stands for <strong class="text-white">Advanced Package Tool</strong>. It's the default package manager for Debian-based Linux distributions. It handles downloading, installing, updating, and removing software packages from repositories — online servers that store packages.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-300">Ubuntu</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-300">Kali Linux</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300">Debian</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-300">Parrot OS</span>
+          </div>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">apt commands</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="cmd">sudo apt update</span>               <span class="comment"># Refresh package list from repositories</span></p>
+              <p><span class="cmd">sudo apt install</span> &lt;pkg&gt;        <span class="comment"># Download and install a package</span></p>
+              <p><span class="cmd">sudo apt remove</span> &lt;pkg&gt;         <span class="comment"># Remove a package (keep config files)</span></p>
+              <p><span class="cmd">sudo apt purge</span> &lt;pkg&gt;          <span class="comment"># Remove package AND config files</span></p>
+              <p><span class="cmd">sudo apt upgrade</span>              <span class="comment"># Upgrade all installed packages</span></p>
+              <p><span class="cmd">sudo apt autoremove</span>           <span class="comment"># Remove unused dependencies</span></p>
+              <p><span class="cmd">apt search</span> keyword            <span class="comment"># Search for packages</span></p>
+              <p><span class="cmd">apt show</span> &lt;pkg&gt;               <span class="comment"># Show package details</span></p>
+            </div>
+          </div>
+          <div class="space-y-2 mb-6">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">apt update</code>
+              <p class="text-gray-400 text-sm">Downloads the latest <strong class="text-white">list of available packages</strong> from repositories. Does NOT install anything — just refreshes the package index. Always run before installing!</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">apt install &lt;pkg&gt;</code>
+              <p class="text-gray-400 text-sm">Downloads and <strong class="text-white">installs a package AND all its dependencies</strong> automatically. Replace <code class="inline">&lt;pkg&gt;</code> with the package name, e.g. <code class="inline">nmap</code>, <code class="inline">vim</code>, <code class="inline">curl</code>.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">apt remove &lt;pkg&gt;</code>
+              <p class="text-gray-400 text-sm">Removes a package but <strong class="text-white">keeps its configuration files</strong>. Use <code class="inline">apt purge</code> to also delete configs.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">apt upgrade</code>
+              <p class="text-gray-400 text-sm"><strong class="text-white">Upgrades all installed packages</strong> to their latest versions. Always run after <code class="inline">apt update</code> to apply security patches.</p>
+            </div>
+          </div>
+          <div class="tip-box p-4 text-sm">
+            <p class="text-blue-300 font-semibold mb-1">💡 Golden Rule:</p>
+            <p class="text-gray-400">Always run <code class="inline">sudo apt update</code> <strong class="text-white">before</strong> installing new packages. Without it, you might install outdated versions or miss new packages.</p>
+          </div>
+        </section>
+
+        <!-- Section 3: pkg -->
+        <section id="section3" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">03</span>
+            <h2 class="text-2xl font-bold text-white">pkg — FreeBSD / Termux (Android)</h2>
+          </div>
+          <p class="text-gray-400 mb-2 leading-relaxed"><code class="inline">pkg</code> is the package manager for <strong class="text-white">FreeBSD</strong> (a Unix-like OS) and <strong class="text-white">Termux</strong> (a powerful terminal emulator for Android). It serves the same purpose as apt but for these systems.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300">FreeBSD</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-green-300">Termux (Android)</span>
+          </div>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">pkg commands</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="cmd">pkg install</span> &lt;pkg&gt;              <span class="comment"># Install a package</span></p>
+              <p><span class="cmd">pkg update</span> && <span class="cmd">pkg upgrade</span>    <span class="comment"># Update list AND upgrade all packages</span></p>
+              <p><span class="cmd">pkg remove</span> &lt;pkg&gt;               <span class="comment"># Remove a package</span></p>
+              <p><span class="cmd">pkg search</span> keyword             <span class="comment"># Search for packages</span></p>
+            </div>
+          </div>
+          <div class="highlight-box p-3 flex items-start gap-3">
+            <code class="inline shrink-0">&&</code>
+            <p class="text-gray-400 text-sm">The <strong class="text-white">AND operator</strong> — runs the second command only if the first succeeds. So <code class="inline">pkg update && pkg upgrade</code> updates the list first, then upgrades everything only if the update succeeded. Covered in full detail in Module 6!</p>
+          </div>
+        </section>
+
+        <!-- Section 4: pacman -->
+        <section id="section4" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">04</span>
+            <h2 class="text-2xl font-bold text-white">pacman — Arch Linux / Manjaro</h2>
+          </div>
+          <p class="text-gray-400 mb-2 leading-relaxed"><code class="inline">pacman</code> is the package manager for <strong class="text-white">Arch Linux</strong> and <strong class="text-white">Manjaro</strong>. It's known for being simple, efficient, and giving users maximum control. The name is inspired by the Pac-Man video game.</p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="text-xs px-2 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300">Arch Linux</span>
+            <span class="text-xs px-2 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300">Manjaro</span>
+          </div>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">pacman commands</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="cmd">sudo pacman -Syu</span>              <span class="comment"># Sync + upgrade all packages</span></p>
+              <p><span class="cmd">sudo pacman -S</span> &lt;pkg&gt;          <span class="comment"># Install a package</span></p>
+              <p><span class="cmd">sudo pacman -R</span> &lt;pkg&gt;          <span class="comment"># Remove a package</span></p>
+              <p><span class="cmd">sudo pacman -Rns</span> &lt;pkg&gt;        <span class="comment"># Remove pkg + dependencies + configs</span></p>
+              <p><span class="cmd">sudo pacman -Ss</span> keyword        <span class="comment"># Search for packages</span></p>
+              <p><span class="cmd">sudo pacman -Qi</span> &lt;pkg&gt;         <span class="comment"># Show detailed package info</span></p>
+              <p><span class="cmd">sudo pacman -Ql</span> &lt;pkg&gt;         <span class="comment"># List files installed by package</span></p>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-S</code>
+              <p class="text-gray-400 text-sm">Stands for <strong class="text-white">"Sync"</strong> — syncs with the repository. Used for installing packages.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-Syu</code>
+              <p class="text-gray-400 text-sm"><code class="inline">y</code> = refresh database, <code class="inline">u</code> = upgrade packages. Together: <strong class="text-white">sync database and upgrade all installed packages</strong>.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-R</code>
+              <p class="text-gray-400 text-sm">Stands for <strong class="text-white">"Remove"</strong>. Removes the specified package.</p>
+            </div>
+            <div class="highlight-box p-3 flex items-start gap-3">
+              <code class="inline shrink-0">-Ss</code>
+              <p class="text-gray-400 text-sm">Double s: <strong class="text-white">"Sync Search"</strong> — searches for packages matching a keyword in the package name and description.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: AUR & yay -->
+        <section id="section5" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">05</span>
+            <h2 class="text-2xl font-bold text-white">AUR & yay — Arch User Repository</h2>
+          </div>
+          <p class="text-gray-400 mb-6 leading-relaxed"><strong class="text-white">AUR</strong> stands for <em>Arch User Repository</em> — a <strong class="text-white">community-driven repository</strong> containing user-submitted package build scripts. It allows users to easily build and install software that isn't in the official repositories. <code class="inline">yay</code> is an AUR helper that automates this process.</p>
+          <div class="terminal-block mb-6">
+            <div class="terminal-bar flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-500/70"></div><div class="w-3 h-3 rounded-full bg-yellow-500/70"></div><div class="w-3 h-3 rounded-full bg-green-500/70"></div><span class="ml-2 text-gray-500 text-xs">yay (AUR helper)</span></div>
+            <div class="p-4 text-sm space-y-1">
+              <p><span class="comment"># Install a package from AUR</span></p>
+              <p><span class="cmd">yay -S</span> &lt;pkg&gt;</p>
+              <p class="mt-2"><span class="comment"># Search AUR and official repos</span></p>
+              <p><span class="cmd">yay</span> keyword</p>
+              <p class="mt-2"><span class="comment"># Update everything including AUR packages</span></p>
+              <p><span class="cmd">yay -Syu</span></p>
+            </div>
+          </div>
+          <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4 text-sm">
+            <p class="text-white font-semibold mb-2">Official Repos vs AUR:</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-teal-400 text-xs font-semibold mb-1">Official Repos</p>
+                <ul class="text-gray-500 text-xs space-y-1">
+                  <li>• Maintained by Arch team</li>
+                  <li>• Security reviewed</li>
+                  <li>• Stable and tested</li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-yellow-400 text-xs font-semibold mb-1">AUR</p>
+                <ul class="text-gray-500 text-xs space-y-1">
+                  <li>• Community maintained</li>
+                  <li>• 50,000+ packages</li>
+                  <li>• Review PKGBUILDs before installing</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Cheat Sheet -->
+        <section id="section6" class="section-anchor glass-card rounded-2xl p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm font-mono">06</span>
+            <h2 class="text-2xl font-bold text-white">Package Manager Cheat Sheet</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-3 text-cyan-400 font-semibold">Action</th>
+                  <th class="text-left py-3 px-3 text-cyan-400 font-semibold">apt</th>
+                  <th class="text-left py-3 px-3 text-cyan-400 font-semibold">pacman</th>
+                  <th class="text-left py-3 px-3 text-cyan-400 font-semibold">pkg</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800 font-mono text-xs">
+                <tr><td class="py-3 px-3 text-gray-400">Install</td><td class="py-3 px-3 text-cyan-300">apt install vim</td><td class="py-3 px-3 text-cyan-300">pacman -S vim</td><td class="py-3 px-3 text-cyan-300">pkg install vim</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-3 text-gray-400">Remove</td><td class="py-3 px-3 text-cyan-300">apt remove vim</td><td class="py-3 px-3 text-cyan-300">pacman -R vim</td><td class="py-3 px-3 text-cyan-300">pkg remove vim</td></tr>
+                <tr><td class="py-3 px-3 text-gray-400">Update list</td><td class="py-3 px-3 text-cyan-300">apt update</td><td class="py-3 px-3 text-cyan-300">pacman -Sy</td><td class="py-3 px-3 text-cyan-300">pkg update</td></tr>
+                <tr class="bg-gray-900/30"><td class="py-3 px-3 text-gray-400">Upgrade all</td><td class="py-3 px-3 text-cyan-300">apt upgrade</td><td class="py-3 px-3 text-cyan-300">pacman -Su</td><td class="py-3 px-3 text-cyan-300">pkg upgrade</td></tr>
+                <tr><td class="py-3 px-3 text-gray-400">Search</td><td class="py-3 px-3 text-cyan-300">apt search vim</td><td class="py-3 px-3 text-cyan-300">pacman -Ss vim</td><td class="py-3 px-3 text-cyan-300">pkg search vim</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="section-anchor glass-card rounded-2xl p-6 sm:p-8 border border-cyan-500/30">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-3xl">📝</span>
+            <h2 class="text-2xl font-bold text-white">Module 2 Quiz</h2>
+            <span class="ml-auto text-sm font-mono text-cyan-400 bg-cyan-400/10 px-3 py-1 rounded-full border border-cyan-400/20" id="score-display">0 / 10</span>
+          </div>
+          <p class="text-gray-500 text-sm mb-8">Test your knowledge of Linux package management.</p>
+          <div id="quiz-container" class="space-y-8"></div>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <button onclick="submitQuiz()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 text-black font-bold hover:from-cyan-400 hover:to-teal-400 transition-all">Check All Answers</button>
+            <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl glass border border-gray-600 text-gray-400 hover:border-cyan-500/50 hover:text-cyan-400 transition-all">Reset Quiz</button>
+          </div>
+          <div id="quiz-result" class="hidden mt-6 rounded-xl p-6 text-center"></div>
+        </section>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-between pt-4">
+          <a href="module1.html" class="flex items-center gap-2 px-6 py-3 rounded-xl glass border border-gray-700 text-gray-400 hover:border-cyan-500/50 hover:text-cyan-400 transition-all text-sm">← User Management</a>
+          <a href="module3.html" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 text-cyan-400 hover:border-cyan-400/60 transition-all text-sm font-semibold">Next: Script Installation →</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q:"What does 'apt' stand for?", opts:["Advanced Package Tool","Automatic Package Transfer","Arch Package Terminal","Advanced Program Terminal"], correct:0 },
+      { q:"Which command refreshes the package list WITHOUT installing anything?", opts:["sudo apt upgrade","sudo apt install","sudo apt update","sudo apt refresh"], correct:2 },
+      { q:"Which distros use apt as their package manager?", opts:["Arch Linux and Manjaro","FreeBSD and Termux","Debian, Ubuntu, Kali, and Parrot","Red Hat and CentOS"], correct:2 },
+      { q:"In pacman, what does the '-S' flag stand for?", opts:["Search","Save","Sync","Start"], correct:2 },
+      { q:"Which pacman command syncs the database AND upgrades all packages?", opts:["sudo pacman -S","sudo pacman -R","sudo pacman -Syu","sudo pacman -Su"], correct:2 },
+      { q:"What is the AUR in Arch Linux?", opts:["Advanced Update Repository","Arch User Repository","Automated Upgrade Runtime","Arch Universal Registry"], correct:1 },
+      { q:"Which command removes a package AND its configuration files in apt?", opts:["apt remove","apt purge","apt delete","apt clean"], correct:1 },
+      { q:"What is 'pkg' used for?", opts:["Arch Linux package management","Debian package building","FreeBSD and Termux package management","Ubuntu snaps"], correct:2 },
+      { q:"What does 'yay' do in the context of Arch Linux?", opts:["It's a greeting script","An AUR helper for installing AUR packages","A system backup tool","A network diagnostic tool"], correct:1 },
+      { q:"What is the correct order to update and upgrade on Debian/Ubuntu?", opts:["apt upgrade then apt update","apt install then apt upgrade","apt update then apt upgrade","apt refresh then apt install"], correct:2 }
+    ];
+    let answers = new Array(questions.length).fill(null), submitted = false;
+    function renderQuiz() {
+      const c = document.getElementById('quiz-container'); c.innerHTML = '';
+      questions.forEach((q,qi) => {
+        const d = document.createElement('div'); d.className = 'border border-gray-800 rounded-xl p-5';
+        d.innerHTML = `<p class="text-white font-semibold mb-4"><span class="text-cyan-400 font-mono text-sm mr-2">Q${qi+1}.</span>${q.q}</p><div class="space-y-2" id="opts-${qi}">${q.opts.map((o,oi)=>`<button onclick="selectAnswer(${qi},${oi})" id="opt-${qi}-${oi}" class="quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3"><span class="w-6 h-6 shrink-0 rounded-full border border-gray-600 flex items-center justify-center text-xs font-mono">${String.fromCharCode(65+oi)}</span>${o}</button>`).join('')}</div><div id="feedback-${qi}" class="hidden mt-3 text-sm rounded-lg p-3"></div>`;
+        c.appendChild(d);
+      });
+    }
+    function selectAnswer(qi,oi) { if(submitted)return; answers[qi]=oi; document.querySelectorAll(`#opts-${qi} button`).forEach((b,i)=>{ b.className='quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'+(i===oi?' selected':''); }); document.getElementById('score-display').textContent=`${answers.filter(a=>a!==null).length} / ${questions.length}`; }
+    function submitQuiz() { submitted=true; let score=0; questions.forEach((q,qi)=>{ const opts=document.querySelectorAll(`#opts-${qi} button`); opts.forEach((b,i)=>{ b.className='quiz-option w-full text-left px-4 py-3 rounded-lg text-gray-300 text-sm flex items-center gap-3'; if(i===q.correct)b.classList.add('correct'); else if(i===answers[qi]&&i!==q.correct)b.classList.add('wrong'); }); const fb=document.getElementById(`feedback-${qi}`); fb.classList.remove('hidden'); if(answers[qi]===q.correct){score++;fb.className='mt-3 text-sm rounded-lg p-3 bg-green-500/10 border border-green-500/30 text-green-300';fb.textContent='✓ Correct!';}else{fb.className='mt-3 text-sm rounded-lg p-3 bg-red-500/10 border border-red-500/30 text-red-300';fb.textContent=`✗ Correct: ${q.opts[q.correct]}`;} }); const r=document.getElementById('quiz-result'); r.classList.remove('hidden'); const pct=Math.round((score/questions.length)*100); r.className=`mt-6 rounded-xl p-6 text-center border ${pct>=70?'border-cyan-500/30 bg-cyan-500/10':'border-red-500/30 bg-red-500/10'}`; r.innerHTML=`<div class="text-4xl mb-2">${pct>=90?'🏆':pct>=70?'✅':'📚'}</div><div class="text-2xl font-black ${pct>=70?'text-cyan-400':'text-red-400'}">${score}/${questions.length} (${pct}%)</div><div class="text-gray-400 text-sm mt-2">${pct>=90?'Perfect! Package management mastered!':pct>=70?'Great work! Keep it up.':'Review the module and try again!'}</div>`; document.getElementById('score-display').textContent=`${score} / ${questions.length}`; }
+    function resetQuiz() { submitted=false; answers=new Array(questions.length).fill(null); document.getElementById('quiz-result').classList.add('hidden'); document.getElementById('score-display').textContent='0 / 10'; renderQuiz(); }
+    renderQuiz();
+  </script>
+</body>
+</html>
