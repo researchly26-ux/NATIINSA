@@ -1,8 +1,8 @@
 # Cyber Operations & Defense Lab — 2026
 
-**Student:** Alex Rivera  
+**Student:** Natnael  
 **Specialization:** Cyber Defense & Incident Response  
-**GitHub Profile:** [github.com/arivera-sec](https://github.com/arivera-sec)
+**GitHub Profile:** [github.com/Natnael](https://github.com/Natnael)
 
 ---
 
@@ -20,9 +20,9 @@ This repository serves as a comprehensive log of my technical training during th
 
 ## 🔗 External Resources
 
-*   [Defense-Shield](https://github.com/arivera-sec/Defense-Shield) — Automated firewall configuration scripts.
-*   [Log-Analyzer](https://github.com/arivera-sec/Log-Analyzer) — Python tool for parsing system logs.
-*   [Sec-Configs](https://github.com/arivera-sec/Sec-Configs) — Hardened configuration files for Linux servers.
+*   [Defense-Shield](https://github.com/Natnael/Defense-Shield) — Automated firewall configuration scripts.
+*   [Log-Analyzer](https://github.com/Natnael/Log-Analyzer) — Python tool for parsing system logs.
+*   [Sec-Configs](https://github.com/Natnael/Sec-Configs) — Hardened configuration files for Linux servers.
 
 ---
 
