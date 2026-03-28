@@ -8,6 +8,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Leaflet Map (free, no API key) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -39,6 +42,15 @@
     .scanline::after { content: ''; position: absolute; width: 100%; height: 2px; background: linear-gradient(transparent, rgba(20,184,166,0.1), transparent); animation: scanline 4s linear infinite; pointer-events: none; }
     .hero-glow { background: radial-gradient(ellipse at 50% 50%, rgba(20,184,166,0.12) 0%, transparent 70%); }
     .progress-bar { background: linear-gradient(90deg, #14b8a6, #2dd4bf, #5eead4); }
+    /* IP Tool */
+    .ip-class-badge { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+    #ipMap { border-radius: 12px; border: 1px solid rgba(20,184,166,0.3); filter: brightness(0.85) saturate(1.2) hue-rotate(150deg); }
+    .leaflet-tile { filter: invert(1) hue-rotate(200deg) brightness(0.9) contrast(1.1) saturate(1.3); }
+    .class-card { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); }
+    .class-card:hover { transform: translateY(-2px); border-color: rgba(20,184,166,0.4); background: rgba(20,184,166,0.05); }
+    @keyframes fadeSlideIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeSlideIn 0.5s ease forwards; }
+    .ip-result-panel { background: linear-gradient(135deg, rgba(13,21,38,0.98) 0%, rgba(5,10,20,0.99) 100%); }
   </style>
 </head>
 <body class="min-h-screen text-gray-100">
@@ -55,14 +67,15 @@
             <span class="text-teal-400">Nat</span><span class="text-white">IvyberNotes</span>
           </span>
         </div>
-        <div class="hidden md:flex items-center gap-6 text-sm text-gray-400">
+        <div class="hidden md:flex items-center gap-5 text-sm text-gray-400">
           <a href="#modules" class="hover:text-teal-400 transition-colors">Modules</a>
-          <a href="linuxforhackers/index.html" class="hover:text-cyan-400 transition-colors font-medium text-cyan-500/70">Linux for Hackers</a>
-          <a href="challenges.html" class="hover:text-teal-400 transition-colors">Challenges</a>
           <a href="notes.html" class="hover:text-teal-400 transition-colors">Notes</a>
           <a href="assignments.html" class="hover:text-teal-400 transition-colors">Assignments</a>
-          <a href="#about" class="hover:text-teal-400 transition-colors">About</a>
-          <a href="quiz.html" class="px-4 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 transition-all font-medium">Practice Quiz</a>
+          <a href="#ip-tool" class="hover:text-cyan-400 transition-colors font-medium text-cyan-400/80 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+            IP Lookup
+          </a>
+          <a href="quiz.html" class="px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 hover:bg-teal-500/20 transition-all font-medium whitespace-nowrap">Practice Quiz</a>
         </div>
         <div class="md:hidden">
           <a href="quiz.html" class="text-teal-400 text-sm">Quiz →</a>
@@ -133,24 +146,6 @@
         </a>
       </div>
 
-      <!-- IP Classifier App Integration -->
-      <div class="mt-12 mb-8 relative max-w-xl mx-auto glass-card rounded-2xl p-6 neon-border text-left">
-        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-teal-500 text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-teal-500/50">Python Web App</div>
-        <h3 class="text-2xl font-bold text-white mb-2 text-center flex justify-center items-center gap-2">
-          <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
-          IP Address Classifier
-        </h3>
-        <p class="text-gray-400 text-sm text-center mb-6">Enter an IPv4 address to determine its class using our API.</p>
-        
-        <div class="flex flex-col sm:flex-row gap-3">
-          <input type="text" id="ipInput" placeholder="e.g., 192.168.1.1" class="flex-1 bg-dark-900 border border-teal-500/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-all font-mono placeholder-gray-600" />
-          <button id="classifyBtn" class="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-black font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-teal-500/20 whitespace-nowrap active:scale-95">Classify IP</button>
-        </div>
-        
-        <div id="ipResult" class="mt-4 hidden rounded-xl border p-4 transition-all">
-          <!-- Results injected via JS -->
-        </div>
-      </div>
 
       <!-- Terminal preview -->
       <div class="mt-16 max-w-2xl mx-auto terminal p-4 text-left shadow-2xl shadow-black/50">
@@ -339,6 +334,186 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════════ IP TOOL SECTION ═══════════════════════════ -->
+  <section id="ip-tool" class="py-24 px-4 border-t border-gray-800/40">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Section header -->
+      <div class="text-center mb-14">
+        <span class="text-cyan-400 text-sm font-mono uppercase tracking-widest">Network Tool</span>
+        <h2 class="text-4xl sm:text-5xl font-black text-white mt-3 mb-4">IP Address <span class="text-cyan-400">Lookup</span></h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">Classify any IPv4 address by class, fetch real-time geolocation, and visualize its location on an interactive map. 100% free — no API key required.</p>
+      </div>
+
+      <!-- Tool card -->
+      <div class="glass-card rounded-3xl p-8 neon-border mb-10" style="box-shadow:0 0 40px rgba(20,184,166,0.12),inset 0 0 40px rgba(20,184,166,0.03)">
+
+        <!-- Input row -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-6">
+          <div class="relative flex-1">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3"/></svg>
+            <input type="text" id="ipToolInput" placeholder="Enter IPv4 address — e.g. 192.168.1.1" class="w-full bg-black/40 border border-teal-500/30 rounded-xl pl-10 pr-4 py-3.5 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400/50 transition-all font-mono text-sm placeholder-gray-600" />
+          </div>
+          <button id="ipToolBtn" class="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 active:scale-95 text-black font-bold px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-teal-500/25 flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Analyze IP
+          </button>
+          <button id="myIpBtn" class="border border-gray-700 hover:border-teal-500/50 text-gray-400 hover:text-teal-400 px-4 py-3.5 rounded-xl transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            My IP
+          </button>
+        </div>
+
+        <!-- Error msg -->
+        <div id="ipToolError" class="hidden mb-4 p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm flex items-center gap-2">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <span id="ipToolErrorMsg"></span>
+        </div>
+
+        <!-- Results panel (hidden until lookup) -->
+        <div id="ipToolResult" class="hidden fade-in">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Left: Classification + Geo info -->
+            <div class="space-y-4">
+              <!-- Class badge -->
+              <div id="classPanel" class="ip-result-panel rounded-2xl p-5 border border-transparent">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">IP Address</span>
+                  <span id="resIp" class="font-mono text-xs bg-teal-500/10 border border-teal-500/30 text-teal-300 px-2 py-1 rounded-lg"></span>
+                </div>
+                <div class="flex items-center gap-4 mb-4">
+                  <div id="classEmoji" class="text-5xl"></div>
+                  <div>
+                    <div id="resClass" class="text-3xl font-black ip-class-badge glow-text"></div>
+                    <div id="resRange" class="text-xs text-gray-500 mt-0.5 font-mono"></div>
+                  </div>
+                </div>
+                <div id="resDesc" class="text-sm text-gray-300 leading-relaxed bg-black/30 rounded-xl p-3 border border-white/5"></div>
+              </div>
+
+              <!-- Geo info -->
+              <div id="geoPanel" class="ip-result-panel rounded-2xl p-5 border border-transparent hidden">
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-3">Geolocation</div>
+                <div class="grid grid-cols-2 gap-3" id="geoGrid"></div>
+              </div>
+            </div>
+
+            <!-- Right: Map -->
+            <div id="mapContainer" class="hidden">
+              <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-2">Location Map</div>
+              <div id="ipMap" style="height:280px; width:100%;"></div>
+              <div class="mt-2 flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+                <span id="mapLabel" class="text-xs text-gray-500 font-mono"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class reference cards -->
+      <div class="mb-4">
+        <div class="text-center mb-8">
+          <span class="text-[11px] text-gray-500 uppercase tracking-widest font-bold">IPv4 Class Reference</span>
+          <h3 class="text-2xl font-black text-white mt-1">All <span class="text-teal-400">IP Classes</span> Explained</h3>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+
+          <div class="class-card rounded-2xl p-5 bg-gradient-to-br from-blue-900/20 to-blue-800/10">
+            <div class="text-3xl mb-2">🔵</div>
+            <div class="font-black text-blue-400 text-lg font-mono mb-1">Class A</div>
+            <div class="text-[11px] font-mono text-gray-500 mb-2">1.0.0.0 – 126.255.255.255</div>
+            <ul class="text-xs text-gray-400 space-y-1">
+              <li>• <span class="text-blue-300">8 network bits</span>, 24 host bits</li>
+              <li>• Subnet: <span class="font-mono text-gray-300">255.0.0.0</span></li>
+              <li>• Up to <span class="text-blue-300">16M hosts</span> per network</li>
+              <li>• Used by large corporations & ISPs</li>
+            </ul>
+          </div>
+
+          <div class="class-card rounded-2xl p-5 bg-gradient-to-br from-green-900/20 to-green-800/10">
+            <div class="text-3xl mb-2">🟢</div>
+            <div class="font-black text-green-400 text-lg font-mono mb-1">Class B</div>
+            <div class="text-[11px] font-mono text-gray-500 mb-2">128.0.0.0 – 191.255.255.255</div>
+            <ul class="text-xs text-gray-400 space-y-1">
+              <li>• <span class="text-green-300">16 network bits</span>, 16 host bits</li>
+              <li>• Subnet: <span class="font-mono text-gray-300">255.255.0.0</span></li>
+              <li>• Up to <span class="text-green-300">65K hosts</span> per network</li>
+              <li>• Used by mid-size organizations</li>
+            </ul>
+          </div>
+
+          <div class="class-card rounded-2xl p-5 bg-gradient-to-br from-teal-900/20 to-teal-800/10">
+            <div class="text-3xl mb-2">🔷</div>
+            <div class="font-black text-teal-400 text-lg font-mono mb-1">Class C</div>
+            <div class="text-[11px] font-mono text-gray-500 mb-2">192.0.0.0 – 223.255.255.255</div>
+            <ul class="text-xs text-gray-400 space-y-1">
+              <li>• <span class="text-teal-300">24 network bits</span>, 8 host bits</li>
+              <li>• Subnet: <span class="font-mono text-gray-300">255.255.255.0</span></li>
+              <li>• Up to <span class="text-teal-300">254 hosts</span> per network</li>
+              <li>• Most common — home & small offices</li>
+            </ul>
+          </div>
+
+          <div class="class-card rounded-2xl p-5 bg-gradient-to-br from-purple-900/20 to-purple-800/10">
+            <div class="text-3xl mb-2">🟣</div>
+            <div class="font-black text-purple-400 text-lg font-mono mb-1">Class D</div>
+            <div class="text-[11px] font-mono text-gray-500 mb-2">224.0.0.0 – 239.255.255.255</div>
+            <ul class="text-xs text-gray-400 space-y-1">
+              <li>• Reserved for <span class="text-purple-300">multicast</span></li>
+              <li>• No subnet mask</li>
+              <li>• Used in streaming, routing protocols</li>
+              <li>• Not assignable to hosts</li>
+            </ul>
+          </div>
+
+          <div class="class-card rounded-2xl p-5 bg-gradient-to-br from-orange-900/20 to-red-800/10">
+            <div class="text-3xl mb-2">🔴</div>
+            <div class="font-black text-orange-400 text-lg font-mono mb-1">Class E</div>
+            <div class="text-[11px] font-mono text-gray-500 mb-2">240.0.0.0 – 255.255.255.255</div>
+            <ul class="text-xs text-gray-400 space-y-1">
+              <li>• Reserved / <span class="text-orange-300">Experimental</span></li>
+              <li>• Not used in public internet</li>
+              <li>• Research & development only</li>
+              <li>• IANA reserved</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Special ranges -->
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="class-card rounded-xl p-4 bg-gradient-to-br from-gray-800/30 to-gray-900/20 flex items-start gap-3">
+            <span class="text-2xl">🔄</span>
+            <div>
+              <div class="font-bold text-gray-300 text-sm font-mono">Loopback</div>
+              <div class="text-[11px] font-mono text-gray-600 mb-1">127.0.0.0 – 127.255.255.255</div>
+              <p class="text-xs text-gray-500">Reserved for localhost. Packets never leave the host. Used for testing network software locally.</p>
+            </div>
+          </div>
+          <div class="class-card rounded-xl p-4 bg-gradient-to-br from-yellow-900/20 to-yellow-800/10 flex items-start gap-3">
+            <span class="text-2xl">🏠</span>
+            <div>
+              <div class="font-bold text-yellow-300 text-sm font-mono">Private Ranges</div>
+              <div class="text-[11px] font-mono text-gray-600 mb-1">10.x, 172.16–31.x, 192.168.x</div>
+              <p class="text-xs text-gray-500">Not routable on the public internet. Used in LANs, home routers, VPNs, and corporate networks.</p>
+            </div>
+          </div>
+          <div class="class-card rounded-xl p-4 bg-gradient-to-br from-red-900/20 to-red-800/10 flex items-start gap-3">
+            <span class="text-2xl">📢</span>
+            <div>
+              <div class="font-bold text-red-300 text-sm font-mono">Broadcast</div>
+              <div class="text-[11px] font-mono text-gray-600 mb-1">255.255.255.255 / x.x.x.255</div>
+              <p class="text-xs text-gray-500">Sends packets to all devices on a network. Never assigned to a specific host device.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="border-t border-gray-800/50 py-8 px-4 text-center">
     <div class="max-w-7xl mx-auto">
@@ -353,7 +528,7 @@
   </footer>
 
   <script>
-    // Typewriter effect
+    // ── Typewriter ──────────────────────────────────────────────
     const lines = [
       'sudo useradd -m student',
       'sudo apt update && sudo apt upgrade',
@@ -380,48 +555,198 @@
     }
     typeNext();
 
-    // IP Classifier Logic
-    document.getElementById('classifyBtn').addEventListener('click', async () => {
-      const ip = document.getElementById('ipInput').value;
-      const resultDiv = document.getElementById('ipResult');
-      
-      if (!ip) {
-        resultDiv.className = 'mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 transition-all';
-        resultDiv.innerHTML = '<span class="text-red-400 flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Please enter an IP address.</span>';
-        resultDiv.classList.remove('hidden');
+    // ── IP Classification (pure JS — works on Netlify) ──────────
+    const CLASS_DATA = {
+      'Class A':  { color:'#3b82f6', emoji:'🔵', range:'1.0.0.0 – 126.255.255.255', desc:'Large networks. 8 network bits, 24 host bits. Default subnet: 255.0.0.0. Supports up to 16 million hosts per network. Used by large ISPs and corporations.' },
+      'Class B':  { color:'#22c55e', emoji:'🟢', range:'128.0.0.0 – 191.255.255.255', desc:'Medium networks. 16 network bits, 16 host bits. Default subnet: 255.255.0.0. Supports up to 65,534 hosts per network. Used by universities and mid-size businesses.' },
+      'Class C':  { color:'#14b8a6', emoji:'🔷', range:'192.0.0.0 – 223.255.255.255', desc:'Small networks. 24 network bits, 8 host bits. Default subnet: 255.255.255.0. Supports up to 254 hosts. Most common class — home routers and small offices.' },
+      'Class D':  { color:'#a855f7', emoji:'🟣', range:'224.0.0.0 – 239.255.255.255', desc:'Reserved for multicast. No subnet mask. Used in video streaming, OSPF routing, and other group-communication protocols. Cannot be assigned to individual hosts.' },
+      'Class E':  { color:'#f97316', emoji:'🔴', range:'240.0.0.0 – 255.255.255.254', desc:'Reserved for experimental and future use by IANA. Never used in production networks. Research and development purposes only.' },
+      'Loopback': { color:'#6b7280', emoji:'🔄', range:'127.0.0.0 – 127.255.255.255', desc:'Reserved for loopback testing. Packets sent here never leave the host machine. 127.0.0.1 is "localhost" — commonly used to test network software locally.' },
+      'Invalid (0.x.x.x)': { color:'#ef4444', emoji:'⚠️', range:'0.0.0.0 – 0.255.255.255', desc:'This address block is reserved. 0.0.0.0 is used as a source address in DHCP before an IP is assigned. Not routable on the public internet.' },
+    };
+
+    function classifyIP(ip) {
+      const parts = ip.trim().split('.');
+      if (parts.length !== 4) return { error: 'Invalid format. Use IPv4 (e.g. 192.168.1.1)' };
+      const nums = parts.map(Number);
+      if (nums.some(n => isNaN(n) || n < 0 || n > 255)) return { error: 'Each octet must be 0–255.' };
+      const first = nums[0];
+      if (first === 0)          return { class: 'Invalid (0.x.x.x)', ip };
+      if (first <= 126)         return { class: 'Class A', ip };
+      if (first === 127)        return { class: 'Loopback', ip };
+      if (first <= 191)         return { class: 'Class B', ip };
+      if (first <= 223)         return { class: 'Class C', ip };
+      if (first <= 239)         return { class: 'Class D', ip };
+      return { class: 'Class E', ip };
+    }
+
+    function isPrivate(ip) {
+      const [a,b] = ip.split('.').map(Number);
+      return (a === 10) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 127);
+    }
+
+    // Leaflet map instance
+    let leafletMap = null;
+    let leafletMarker = null;
+
+    function showMap(lat, lon, label) {
+      document.getElementById('mapContainer').classList.remove('hidden');
+      document.getElementById('mapLabel').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+      if (!leafletMap) {
+        leafletMap = L.map('ipMap', { zoomControl: true, scrollWheelZoom: false }).setView([lat, lon], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors', maxZoom: 18
+        }).addTo(leafletMap);
+      } else {
+        leafletMap.setView([lat, lon], 10);
+      }
+
+      if (leafletMarker) leafletMarker.remove();
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="width:16px;height:16px;border-radius:50%;background:#14b8a6;box-shadow:0 0 0 4px rgba(20,184,166,0.3),0 0 12px rgba(20,184,166,0.6);border:2px solid #fff;"></div>`,
+        iconSize: [16,16], iconAnchor: [8,8]
+      });
+      leafletMarker = L.marker([lat, lon], { icon }).addTo(leafletMap)
+        .bindPopup(`<b style="color:#0f172a">${label}</b>`).openPopup();
+    }
+
+    function geoRow(icon, label, value) {
+      return `<div class="bg-black/30 rounded-lg p-2.5 border border-white/5">
+        <div class="text-[10px] text-gray-600 uppercase tracking-wider mb-1">${icon} ${label}</div>
+        <div class="text-sm text-white font-medium truncate">${value || '—'}</div>
+      </div>`;
+    }
+
+    async function runLookup(rawIp) {
+      const errEl = document.getElementById('ipToolError');
+      const errMsg = document.getElementById('ipToolErrorMsg');
+      const resultEl = document.getElementById('ipToolResult');
+
+      errEl.classList.add('hidden');
+      resultEl.classList.add('hidden');
+      document.getElementById('mapContainer').classList.add('hidden');
+      document.getElementById('geoPanel').classList.add('hidden');
+
+      // Classify
+      const cls = classifyIP(rawIp);
+      if (cls.error) {
+        errEl.classList.remove('hidden');
+        errMsg.textContent = cls.error;
         return;
       }
-      
-      resultDiv.className = 'mt-4 rounded-xl border border-teal-500/30 bg-teal-500/5 p-4 transition-all';
-      resultDiv.innerHTML = '<div class="flex items-center justify-center gap-3 text-teal-400"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Classifying...</div>';
-      resultDiv.classList.remove('hidden');
-      
-      try {
-        const res = await fetch('http://127.0.0.1:5000/classify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ip })
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-          resultDiv.className = 'mt-4 rounded-xl border border-teal-500/30 bg-teal-500/10 p-4 transition-all flex flex-col items-center';
-          resultDiv.innerHTML = `
-            <div class="text-sm text-gray-400 mb-1">Result for <span class="font-mono text-white">${data.ip}</span></div>
-            <div class="text-3xl font-black text-teal-400 glow-text mb-2">${data.class}</div>
-            <div class="text-sm text-teal-200/70 border-t border-teal-500/20 pt-2 w-full text-center">${data.description}</div>
-          `;
-        } else {
-          resultDiv.className = 'mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4 transition-all';
-          resultDiv.innerHTML = `<span class="text-red-400 flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> ${data.error}</span>`;
-        }
-      } catch (err) {
-        resultDiv.className = 'mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 transition-all';
-        resultDiv.innerHTML = `
-          <div class="text-yellow-400 font-medium flex items-center gap-2 mb-1"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Connection Error</div>
-          <div class="text-sm text-yellow-200/70">Ensure the Python backend (app.py) is running locally on port 5000: <br/><code class="bg-black/30 px-2 py-0.5 rounded mt-1 inline-block border border-yellow-500/20 text-yellow-300">python app.py</code></div>
-        `;
+
+      const meta = CLASS_DATA[cls.class] || { color:'#14b8a6', emoji:'❓', range:'', desc:'' };
+
+      // Populate classification panel
+      document.getElementById('resIp').textContent     = cls.ip;
+      document.getElementById('resClass').textContent  = cls.class;
+      document.getElementById('resClass').style.color  = meta.color;
+      document.getElementById('classEmoji').textContent = meta.emoji;
+      document.getElementById('resRange').textContent  = meta.range;
+      document.getElementById('resDesc').textContent   = meta.desc;
+      document.getElementById('classPanel').style.borderColor = meta.color + '33';
+
+      resultEl.classList.remove('hidden');
+      resultEl.classList.remove('fade-in');
+      void resultEl.offsetWidth; // reflow to retrigger animation
+      resultEl.classList.add('fade-in');
+
+      // Geo lookup — skip for private/loopback IPs
+      if (isPrivate(cls.ip)) {
+        document.getElementById('geoPanel').classList.remove('hidden');
+        document.getElementById('geoGrid').innerHTML = `
+          <div class="col-span-2 text-center text-sm text-yellow-400/80 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3">
+            🏠 This is a <strong>private / local IP address</strong>. Geolocation is not available for private ranges.
+          </div>`;
+        return;
       }
+
+      // Free geolocation — try ipwho.is first, fall back to ipapi.co
+      // Both are free, CORS-enabled, no API key needed — works on Netlify
+      async function fetchGeo(ip) {
+        // Primary: ipwho.is
+        try {
+          const r = await fetch(`https://ipwho.is/${ip}`);
+          const d = await r.json();
+          if (d.success !== false) return {
+            country: d.country, country_code: d.country_code,
+            flag: d.flag?.emoji || '', city: d.city, region: d.region,
+            isp: d.connection?.isp || d.org || '',
+            timezone: d.timezone?.id || '',
+            asn: d.connection?.asn ? `AS${d.connection.asn}` : '',
+            postal: d.postal || '', lat: d.latitude, lon: d.longitude,
+          };
+        } catch(_) {}
+
+        // Fallback: ipapi.co (free, 30k req/month)
+        const r2 = await fetch(`https://ipapi.co/${ip}/json/`);
+        const d2 = await r2.json();
+        if (d2.error) throw new Error(d2.reason || 'Geolocation failed');
+        return {
+          country: d2.country_name, country_code: d2.country_code,
+          flag: '', city: d2.city, region: d2.region,
+          isp: d2.org || '', timezone: d2.timezone || '',
+          asn: d2.asn || '', postal: d2.postal || '',
+          lat: d2.latitude, lon: d2.longitude,
+        };
+      }
+
+      try {
+        const geo = await fetchGeo(cls.ip);
+
+        document.getElementById('geoPanel').classList.remove('hidden');
+        document.getElementById('geoGrid').innerHTML = [
+          geoRow('🌍', 'Country',      `${geo.flag} ${geo.country} (${geo.country_code})`),
+          geoRow('🏙️', 'City / Region', `${geo.city}, ${geo.region}`),
+          geoRow('🌐', 'ISP',           geo.isp),
+          geoRow('🕐', 'Timezone',      geo.timezone),
+          geoRow('📡', 'ASN',           geo.asn),
+          geoRow('📍', 'Postal',        geo.postal),
+        ].join('');
+
+        if (geo.lat && geo.lon)
+          showMap(geo.lat, geo.lon, `${geo.city}, ${geo.country}`);
+
+      } catch (e) {
+        document.getElementById('geoPanel').classList.remove('hidden');
+        document.getElementById('geoGrid').innerHTML = `
+          <div class="col-span-2 text-center text-sm text-yellow-400/80 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3">
+            ⚠️ Could not fetch geolocation: ${e.message}
+          </div>`;
+      }
+    }
+
+    // Button: Analyze IP
+    document.getElementById('ipToolBtn').addEventListener('click', () => {
+      const ip = document.getElementById('ipToolInput').value.trim();
+      if (!ip) {
+        const e = document.getElementById('ipToolError');
+        document.getElementById('ipToolErrorMsg').textContent = 'Please enter an IP address first.';
+        e.classList.remove('hidden');
+        return;
+      }
+      runLookup(ip);
+    });
+
+    // Button: My IP
+    document.getElementById('myIpBtn').addEventListener('click', async () => {
+      document.getElementById('myIpBtn').textContent = 'Detecting...';
+      try {
+        const res = await fetch('https://ipwho.is/').then(r => r.json());
+        document.getElementById('ipToolInput').value = res.ip;
+        document.getElementById('myIpBtn').textContent = 'My IP';
+        runLookup(res.ip);
+      } catch {
+        document.getElementById('myIpBtn').textContent = 'My IP';
+      }
+    });
+
+    // Enter key
+    document.getElementById('ipToolInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('ipToolBtn').click();
     });
   </script>
 </body>

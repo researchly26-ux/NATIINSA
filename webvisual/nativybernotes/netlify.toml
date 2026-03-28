@@ -1,9 +1,62 @@
 [build]
   publish = "."
 
+# ── Basic security headers (no restrictive CSP — lets all CDN/APIs work) ──
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options        = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
-    Cache-Control = "public, max-age=3600"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Access-Control-Allow-Origin = "*"
+
+# ── Clean URL redirects ────────────────────────────────────────────────────
+[[redirects]]
+  from = "/module1"
+  to   = "/module1.html"
+  status = 200
+
+[[redirects]]
+  from = "/module2"
+  to   = "/module2.html"
+  status = 200
+
+[[redirects]]
+  from = "/module3"
+  to   = "/module3.html"
+  status = 200
+
+[[redirects]]
+  from = "/module4"
+  to   = "/module4.html"
+  status = 200
+
+[[redirects]]
+  from = "/module5"
+  to   = "/module5.html"
+  status = 200
+
+[[redirects]]
+  from = "/module6"
+  to   = "/module6.html"
+  status = 200
+
+[[redirects]]
+  from = "/quiz"
+  to   = "/quiz.html"
+  status = 200
+
+[[redirects]]
+  from = "/notes"
+  to   = "/notes.html"
+  status = 200
+
+[[redirects]]
+  from = "/assignments"
+  to   = "/assignments.html"
+  status = 200
+
+[[redirects]]
+  from = "/challenges"
+  to   = "/challenges.html"
+  status = 200
